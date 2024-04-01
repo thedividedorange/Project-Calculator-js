@@ -8,22 +8,22 @@ const topDisplay = document.querySelector(".display .top")
 const bottomDisplay = document.querySelector(".display .bottom")
 
 const operations = {
-    add: (a,b) => obj.n.result = bottomDisplay.textContent = a+b,
-    substract: (a,b) => obj.n.result = bottomDisplay.textContent = a-b,
-    divide: (a,b) => obj.n.result = bottomDisplay.textContent = a/b,
-    multiply: (a,b) => obj.n.result = bottomDisplay.textContent = a*b,
+    add: (a,b) => a+b,
+    substract: (a,b) => a-b,
+    divide: (a,b) => a/b,
+    multiply: (a,b) => a*b,
     // percent: () => obj.result = parseInt(bottomDisplay.textContent)/100,
 }
 const obj = {
-    o: {previousOld: 0,
+    o: {previousOld: '',
         operatorOld: '',
-        nextOld: 0,
-        resultOld: 0,
+        nextOld: '',
+        resultOld: '',
     },
-    n:{ previous: 0,
+    n:{ previous: '',
         operator: '',
-        next: 0,
-        result: 0,
+        next: '',
+        result: '',
     }
 }
 
@@ -31,21 +31,18 @@ let current;
 
 function operate(previous,next, operator){
 
-    // obj.n.previous = parseFloat(previous)
-    // obj.n.next = parseFloat(next)
-
     switch(operator){
         case "+":
-            operations.add(obj.n.previous,obj.n.next)
+            return obj.n.result = operations.add(previous,next)
             break;
         case "-":
-            operations.substract(obj.n.previous,obj.n.next)
+            return obj.n.result = operations.substract(previous,next)
             break;
         case "*":
-            operations.multiply(obj.n.previous,obj.n.next)
+            return obj.n.result = operations.multiply(previous,next)
             break;
         case "÷":
-            operations.divide(obj.n.previous,obj.n.next)
+            return obj.n.result = operations.divide(previous,next)
             break;
         // case "%":
         //     operations.percent()
@@ -63,15 +60,15 @@ function handleOperationsClickEvt(){
     // else {
 
     // if (obj.n.previous === 0 && obj.o.previousOld !== 0){
-    if (obj.n.previous === 0){
+    if (obj.n.previous === ''){
         obj.n.previous = obj.o.resultOld = parseFloat(bottomDisplay.textContent)    
         obj.n.operator = this.value
         topDisplay.textContent = obj.n.previous + obj.n.operator  
         console.log(`1`)
 
-    } else if(obj.n.previous !== 0 && obj.n.next !== 0){
+    } else if(obj.n.previous !== '' && obj.n.next !== ''){
 
-        operate(obj.n.previous, obj.n.next, obj.n.operator)
+        bottomDisplay.textContent = operate(obj.n.previous, obj.n.next, obj.n.operator)
         console.log(`2`)
         cpyObjectToOld()
 
@@ -97,13 +94,15 @@ function handleNumbersClickEvt(){
 
     if (obj.n.operator === ''){
         obj.n.previous += this.value
-        obj.n.previous.charAt(0) === '0' ? obj.n.previous = parseFloat([...obj.n.previous].splice(1).join('')) : obj.n.previous = parseFloat(obj.n.previous)
+        obj.n.previous.charAt(0) === '0' && obj.n.previous.length >= 2  ? 
+            obj.n.previous = parseFloat([...obj.n.previous].splice(1).join('')) : obj.n.previous = parseFloat(obj.n.previous)
         bottomDisplay.textContent = obj.n.previous
         current = 'previous'
     } 
     else {
         obj.n.next += this.value
-        obj.n.next.charAt(0) === '0' ? obj.n.next = parseFloat([...obj.n.next].splice(1).join('')) : obj.n.next = parseFloat(obj.n.next)
+        obj.n.next.charAt(0) === '0' && obj.n.previous.length >= 2 ? 
+            obj.n.next = parseFloat([...obj.n.next].splice(1).join('')) : obj.n.next = parseFloat(obj.n.next)
         bottomDisplay.textContent = obj.n.next
         current = 'next'
     }
@@ -111,26 +110,24 @@ function handleNumbersClickEvt(){
 
 function handleEqualsEvt(){
 
-    if(obj.n.previous !== 0 && obj.n.next !== 0){
-        operate(obj.n.previous, obj.n.next, obj.n.operator)
+    if(obj.n.previous !== '' && obj.n.next !== ''){
+        bottomDisplay.textContent = operate(obj.n.previous, obj.n.next, obj.n.operator)
         topDisplay.textContent = `${obj.n.previous} ${obj.n.operator} ${obj.n.next} =`
         cpyObjectToOld()
+        handleError()
         clearValues(true,false,false) 
         current = undefined   
-    } else if(obj.n.previous !== 0 && obj.n.next === 0){
-        obj.o.operatorOld !== '' ? topDisplay.textContent = `${obj.o.previousOld} ${obj.o.operatorOld} ${obj.o.nextOld} =` : topDisplay.textContent = ''
+    } else if(obj.n.previous !== '' && obj.n.next === ''){
+        obj.n.previous === obj.o.resultOld ? topDisplay.textContent = `${obj.o.previousOld} ${obj.o.operatorOld} ${obj.o.nextOld} =` : topDisplay.textContent = ''
         clearValues(true,false,false) 
         }
-
+    
 }
 
 function handleCurrentEntryEvt(){
 
     if (current === undefined){
-        clearValues(true,false,false) 
-        obj.n.result = ''
-        bottomDisplay.textContent = '0'
-        topDisplay.textContent = ''
+        clearValues(true,false,true) 
     } else if(current === 'previous'){
         bottomDisplay.textContent = obj.n.previous = 0
         } else if(current === 'next'){
@@ -140,7 +137,6 @@ function handleCurrentEntryEvt(){
 
 function handleCalcDeleteEvt(){
 
-    
     if(current === 'previous'){
         obj.n.previous = obj.n.previous.toString()
         obj.n.previous = parseInt(obj.n.previous.slice(0, obj.n.previous.length-1))
@@ -155,18 +151,20 @@ function handleCalcDeleteEvt(){
 
 
 function handleResetEvt(){
+
     clearValues(true, true, true)
 }
 
 function clearValues(objNew=false, objOld=false, display=false){
+
     if (objNew === true) {
         for (let i in obj.n){
-            typeof obj.n[i] === 'number' ? obj.n[i] = 0 : typeof obj.n[i] === 'string' ? obj.n[i] = '' : obj.n[i]
+            typeof obj.n[i] === 'number' ? obj.n[i] = '' : typeof obj.n[i] === 'string' ? obj.n[i] = '' : obj.n[i]
         }
     }
     if(objOld === true){
         for (let i in obj.o){
-            typeof obj.o[i] === 'number' ? obj.o[i] = 0 : typeof obj.o[i] === 'string' ? obj.o[i] = '' : obj.o[i]
+            typeof obj.o[i] === 'number' ? obj.o[i] = '' : typeof obj.o[i] === 'string' ? obj.o[i] = '' : obj.o[i]
         }
     }
     if(display === true){
@@ -187,7 +185,12 @@ function handleError(){
 
     isNaN(obj.n.previous) ? obj.n.previous = 0 : obj.n.previous
     isNaN(obj.n.next) ? obj.n.next = 0 : obj.n.next
-    bottomDisplay.textContent === "NaN" ? bottomDisplay.textContent = '0' : bottomDisplay.textContent
+    if (bottomDisplay.textContent === "NaN"){
+        bottomDisplay.textContent = '0'
+    }
+    if(bottomDisplay.textContent === "Infinity" && obj.n.operator === '÷'){
+        bottomDisplay.textContent = 'Cannot Divide by 0'
+    }
 }
 
 deleteButton.addEventListener("click", handleCalcDeleteEvt)
@@ -197,71 +200,6 @@ equals.addEventListener("click", handleEqualsEvt)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
 buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
 
-// function handleOperationsClickEvt(){
-
-//     if(this.value === "="){
-//         if(values.previous !== 0 && values.next !== 0){
-//             operate(values.previous, values.next, values.operator)
-//             topDisplay.textContent = `${values.previous} ${values.operator} ${values.next} =`
-
-//             objOld.previousOld = values.previous
-//             objOld.operatorOld = values.operator
-//             objOld.nextOld = values.next
-//             objOld.resultOld = values.result
-
-//             clearValues()
-//         } else {
-//             if(values.previous !== 0 && values.next === 0){
-//                 topDisplay.textContent = `${objOld.previousOld} ${objOld.operatorOld} ${objOld.nextOld} =`
-    
-//                 // objOld.previousOld = values.previous
-//                 // objOld.operatorOld = values.operator
-//                 // objOld.nextOld = values.next
-//                 // objOld.resultOld = values.result
-    
-//                 clearValues()
-//             }
-//         }
-//     } else if (this.value === "%"){
-//         values.operator = this.value
-//         operate(undefined, undefined, values.operator)
-//         bottomDisplay.textContent = values.result
-//         clearValues()
-//     }
-
-//     else {
-//         if (values.previous === 0 && objOld.previous !== 0){
-//             values.previous = objOld.previousOld = bottomDisplay.textContent   
-//         }
-
-//         if(values.previous !== 0 && values.next !== 0){
-//             operate(values.previous, values.next, values.operator)
-
-//             objOld.operatorOld = values.operator
-//             objOld.previousOld = values.previous
-//             objOld.operatorOld = values.operator
-//             objOld.nextOld = values.next
-//             objOld.resultOld = values.result
-
-//             values.operator = this.value
-//             topDisplay.textContent = values.result + values.operator
-
- 
-            
-//             clearValues()
-//             console.log(`first`)
-//             values.previous = bottomDisplay.textContent
-//             values.operator = this.value
-
-//         } else {
-//             values.operator = this.value
-//             topDisplay.textContent = values.previous + values.operator
-//             current = undefined
-//             console.log(`sec`)
-//             }
-
-//         }
-// }
 
 
 
@@ -270,62 +208,6 @@ buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersC
 
 
 
-// buttons.forEach((button) =>{
-
-//     button.addEventListener("click", function(evt){
-
-//         if(this.classList.contains("number")){ 
-//             if (values.operator === ''){
-//                 values.previous += this.value
-//                 if(values.previous.charAt(0) === '0'){
-//                     values.previous = [...values.previous].splice(1).join('')
-//                 }
-//                 bottomDisplay.textContent = values.previous
-//             } else { 
-//                 values.next += this.value
-//                 if(values.next.charAt(0) === '0'){
-//                     values.next = [...values.next].splice(1).join('')
-//                 }
-//                 bottomDisplay.textContent = values.next
-//             }
-//         }
-
-//         if(this.classList.contains("operation")){
-
-//                 if(this.value === "="){
-//                     if(values.previous !== 0 && values.next !== 0){
-//                         operate(values.previous, values.next, values.operator)
-//                         topDisplay.textContent = `${values.previous} ${values.operator} ${values.next} =`
-//                         clearValues()
-//                     }
-//                 } else {
-
-//                     if (values.previous === 0){
-//                         values.previous = bottomDisplay.textContent   
-//                     }
-
-//                     if(values.previous !== 0 && values.next !== 0){
-//                         operate(values.previous, values.next, values.operator)
-
-//                         values.operator = this.value
-//                         topDisplay.textContent = values.result + values.operator
-
-//                         clearValues()
-
-//                         values.previous = bottomDisplay.textContent
-//                         values.operator = this.value
-
-//                      } else{
-                    
-//                         values.operator = this.value
-//                         topDisplay.textContent = values.previous + values.operator
-//                      }
-
-
-//                 }
-//         }
-//     })
-// })
 
 
 
@@ -334,122 +216,201 @@ buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersC
 
 
 
-//old
 
-// const buttons = document.querySelectorAll(".calcButtons button")
+
+
+
+// const buttonsNumbers = document.querySelectorAll(".calcButtons button.number")
+// const buttonsOperations = document.querySelectorAll(".calcButtons button.operation")
+// const deleteButton = document.querySelector(".calcButtons button.delete")
+// const currentEntry = document.querySelector(".calcButtons button.ce")
+// const resetCalculator = document.querySelector(".calcButtons button.reset")
+// const equals = document.querySelector(".calcButtons button.equals")
 // const topDisplay = document.querySelector(".display .top")
 // const bottomDisplay = document.querySelector(".display .bottom")
 
 // const operations = {
-//     add: (a,b) => result = bottomDisplay.textContent = a+b,
-//     substract: (a,b) => result = bottomDisplay.textContent = a-b,
-//     divide: (a,b) => result = bottomDisplay.textContent = a/b,
-//     multiply: (a,b) => result = bottomDisplay.textContent = a*b,
-//     // percent: () => result = parseInt(bottomDisplay.textContent)/100,
+//     add: (a,b) => a+b,
+//     substract: (a,b) => a-b,
+//     divide: (a,b) => a/b,
+//     multiply: (a,b) => a*b,
+//     // percent: () => obj.result = parseInt(bottomDisplay.textContent)/100,
 // }
-
-// const values = {
-//     a: 0,
-//     b: 0,
-//     temp: 0,
-//     result: 0,
-//     operator: ''
-// }
-
-// let a = 0
-// let b = 0
-// let temp = 0
-// let result = 0
-// let operator = ''
-
-// function operate(a,b, operator){
-//     a = parseInt(a)
-//     b = parseInt(b)
-
-//     switch(operator){
-//         case "+":
-//             operations.add(a,b)
-//             break;
-//         case "-":
-//             operations.substract(a,b)
-//             break;
-//         case "*":
-//             operations.multiply(a,b)
-//             break;
-//         case "÷":
-//             operations.divide(a,b)
-//             break;
-//     //     case "%":
-//     //         operations.percent()
-//     //         break;
+// const obj = {
+//     o: {previousOld: 0,
+//         operatorOld: '',
+//         nextOld: 0,
+//         resultOld: 0,
+//     },
+//     n:{ previous: 0,
+//         operator: '',
+//         next: 0,
+//         result: 0,
 //     }
 // }
 
-// function clearValues(){
-//     a=0
-//     b=0
-//     temp=0
-//     operator = ''
-    
+// let current;
+
+// function operate(previous,next, operator){
+
+//     switch(operator){
+//         case "+":
+//             return obj.n.result = operations.add(previous,next)
+//             break;
+//         case "-":
+//             return obj.n.result = operations.substract(previous,next)
+//             break;
+//         case "*":
+//             return obj.n.result = operations.multiply(previous,next)
+//             break;
+//         case "÷":
+//             return obj.n.result = operations.divide(previous,next)
+//             break;
+//         // case "%":
+//         //     operations.percent()
+//         //     break;
+//     }
 // }
 
-// buttons.forEach(function(button){
+// function handleOperationsClickEvt(){
+//     // if (this.value === "%"){
+//     //     obj.operator = this.value
+//     //     operate(undefined, undefined, obj.operator)
+//     //     bottomDisplay.textContent = obj.result
+//     //     clearValues()
+//     // }
+//     // else {
 
-//     button.addEventListener("click", function(evt){
+//     // if (obj.n.previous === 0 && obj.o.previousOld !== 0){
+//     if (obj.n.previous === 0){
+//         obj.n.previous = obj.o.resultOld = parseFloat(bottomDisplay.textContent)    
+//         obj.n.operator = this.value
+//         topDisplay.textContent = obj.n.previous + obj.n.operator  
+//         console.log(`1`)
 
-//         if(this.classList.contains("number")){ 
-//             if (operator === ''){
-//                 a += this.value
-//                 if(a.charAt(0) === '0'){
-//                     a = [...a].splice(1).join('')
-//                 }
-//                 bottomDisplay.textContent = a
-//             } else { 
-//                 b += this.value
-//                 if(b.charAt(0) === '0'){
-//                     b = [...b].splice(1).join('')
-//                 }
-//                 bottomDisplay.textContent = b
+//     } else if(obj.n.previous !== 0 && obj.n.next !== 0){
+
+//         bottomDisplay.textContent = operate(obj.n.previous, obj.n.next, obj.n.operator)
+//         console.log(`2`)
+//         cpyObjectToOld()
+
+//         obj.n.operator = this.value
+//         topDisplay.textContent = obj.n.result + obj.n.operator 
+            
+//         clearValues(true,false,false)
+
+//         console.log(`3`)
+//         obj.n.previous = parseFloat(bottomDisplay.textContent)
+//         obj.n.operator = this.value
+
+//         } 
+//     else {  
+//         obj.n.operator = this.value
+//         topDisplay.textContent = obj.n.previous + obj.n.operator
+//         current = undefined
+//         console.log(`4`)
+//     }
+// }
+
+// function handleNumbersClickEvt(){
+
+//     if (obj.n.operator === ''){
+//         obj.n.previous += this.value
+//         obj.n.previous.charAt(0) === '0' ? obj.n.previous = parseFloat([...obj.n.previous].splice(1).join('')) : obj.n.previous = parseFloat(obj.n.previous)
+//         bottomDisplay.textContent = obj.n.previous
+//         current = 'previous'
+//     } 
+//     else {
+//         obj.n.next += this.value
+//         obj.n.next.charAt(0) === '0' ? obj.n.next = parseFloat([...obj.n.next].splice(1).join('')) : obj.n.next = parseFloat(obj.n.next)
+//         bottomDisplay.textContent = obj.n.next
+//         current = 'next'
+//     }
+// }
+
+// function handleEqualsEvt(){
+
+//     if(obj.n.previous !== 0 && obj.n.next !== 0){
+//         bottomDisplay.textContent = operate(obj.n.previous, obj.n.next, obj.n.operator)
+//         topDisplay.textContent = `${obj.n.previous} ${obj.n.operator} ${obj.n.next} =`
+//         cpyObjectToOld()
+//         clearValues(true,false,false) 
+//         current = undefined   
+//     } else if(obj.n.previous !== 0 && obj.n.next === 0){
+//         obj.o.operatorOld !== '' ? topDisplay.textContent = `${obj.o.previousOld} ${obj.o.operatorOld} ${obj.o.nextOld} =` : topDisplay.textContent = ''
+//         clearValues(true,false,false) 
+//         }
+
+// }
+
+// function handleCurrentEntryEvt(){
+
+//     if (current === undefined){
+//         clearValues(true,false,true) 
+//     } else if(current === 'previous'){
+//         bottomDisplay.textContent = obj.n.previous = 0
+//         } else if(current === 'next'){
+//         bottomDisplay.textContent = obj.n.next = 0
 //             }
+// }
+
+// function handleCalcDeleteEvt(){
+
+    
+//     if(current === 'previous'){
+//         obj.n.previous = obj.n.previous.toString()
+//         obj.n.previous = parseInt(obj.n.previous.slice(0, obj.n.previous.length-1))
+//         bottomDisplay.textContent = obj.n.previous
+//     } else if(current === 'next'){
+//         obj.n.next = obj.n.next.toString()
+//         obj.n.next = parseFloat(obj.n.next.slice(0, obj.n.next.length-1))
+//         bottomDisplay.textContent = obj.n.next
+//     }
+//     handleError()
+// }
+
+
+// function handleResetEvt(){
+
+//     clearValues(true, true, true)
+// }
+
+// function clearValues(objNew=false, objOld=false, display=false){
+
+//     if (objNew === true) {
+//         for (let i in obj.n){
+//             typeof obj.n[i] === 'number' ? obj.n[i] = 0 : typeof obj.n[i] === 'string' ? obj.n[i] = '' : obj.n[i]
 //         }
-
-//         if(this.classList.contains("operation")){
-
-//                 if(this.value === "="){
-//                     if(a !== 0 && b !== 0){
-//                         operate(a,b, operator)
-//                         if(temp !== 0){
-//                             b=temp
-//                         }
-//                         topDisplay.textContent = `${a} ${operator} ${b} =`
-//                         clearValues()
-//                     }
-//                 } else {
-
-//                     if (a === 0){
-//                         a = bottomDisplay.textContent   
-//                     }
-
-//                     if(a !== 0 && b !== 0){
-//                         temp = b
-//                         operate(a,b, operator)
-//                         operator = this.value
-//                         topDisplay.textContent = result + operator
-
-//                         clearValues()
-//                         a = bottomDisplay.textContent
-//                         operator = this.value
-
-//                      } else{
-                    
-//                     operator = this.value
-//                     topDisplay.textContent = a + operator
-//                      }
-
-
-//                 }
+//     }
+//     if(objOld === true){
+//         for (let i in obj.o){
+//             typeof obj.o[i] === 'number' ? obj.o[i] = 0 : typeof obj.o[i] === 'string' ? obj.o[i] = '' : obj.o[i]
 //         }
-//     })
-// })
+//     }
+//     if(display === true){
+//         bottomDisplay.textContent = '0'
+//         topDisplay.textContent = ''
+//     }
+// }
 
+// function cpyObjectToOld(){
 
+//     obj.o.previousOld = obj.n.previous
+//     obj.o.operatorOld = obj.n.operator
+//     obj.o.nextOld = obj.n.next
+//     obj.o.resultOld = obj.n.result
+// }
+
+// function handleError(){
+
+//     isNaN(obj.n.previous) ? obj.n.previous = 0 : obj.n.previous
+//     isNaN(obj.n.next) ? obj.n.next = 0 : obj.n.next
+//     bottomDisplay.textContent === "NaN" ? bottomDisplay.textContent = '0' : bottomDisplay.textContent
+// }
+
+// deleteButton.addEventListener("click", handleCalcDeleteEvt)
+// currentEntry.addEventListener("click", handleCurrentEntryEvt)
+// resetCalculator.addEventListener("click", handleResetEvt)
+// equals.addEventListener("click", handleEqualsEvt)
+// buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
+// buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
