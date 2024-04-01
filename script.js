@@ -58,18 +58,14 @@ function handleOperationsClickEvt(){
     //     clearValues()
     // }
     // else {
-
-    // if (obj.n.previous === 0 && obj.o.previousOld !== 0){
     if (obj.n.previous === ''){
         obj.n.previous = obj.o.resultOld = parseFloat(bottomDisplay.textContent)    
         obj.n.operator = this.value
         topDisplay.textContent = obj.n.previous + obj.n.operator  
-        console.log(`1`)
 
     } else if(obj.n.previous !== '' && obj.n.next !== ''){
 
         bottomDisplay.textContent = operate(obj.n.previous, obj.n.next, obj.n.operator)
-        console.log(`2`)
         cpyObjectToOld()
 
         obj.n.operator = this.value
@@ -77,7 +73,6 @@ function handleOperationsClickEvt(){
             
         clearValues(true,false,false)
 
-        console.log(`3`)
         obj.n.previous = parseFloat(bottomDisplay.textContent)
         obj.n.operator = this.value
 
@@ -86,7 +81,6 @@ function handleOperationsClickEvt(){
         obj.n.operator = this.value
         topDisplay.textContent = obj.n.previous + obj.n.operator
         current = undefined
-        console.log(`4`)
     }
 }
 
@@ -118,8 +112,13 @@ function handleEqualsEvt(){
         clearValues(true,false,false) 
         current = undefined   
     } else if(obj.n.previous !== '' && obj.n.next === ''){
-        obj.n.previous === obj.o.resultOld ? topDisplay.textContent = `${obj.o.previousOld} ${obj.o.operatorOld} ${obj.o.nextOld} =` : topDisplay.textContent = ''
-        clearValues(true,false,false) 
+            if(obj.n.previous === obj.o.resultOld){
+                topDisplay.textContent = `${obj.o.previousOld} ${obj.o.operatorOld} ${obj.o.nextOld} =`
+            }
+            else {
+                topDisplay.textContent = ''
+            }
+            clearValues(true,false,false) 
         }
     
 }
@@ -131,7 +130,7 @@ function handleCurrentEntryEvt(){
     } else if(current === 'previous'){
         bottomDisplay.textContent = obj.n.previous = 0
         } else if(current === 'next'){
-        bottomDisplay.textContent = obj.n.next = 0
+            bottomDisplay.textContent = obj.n.next = 0
             }
 }
 
@@ -145,19 +144,17 @@ function handleCalcDeleteEvt(){
         obj.n.next = obj.n.next.toString()
         obj.n.next = parseFloat(obj.n.next.slice(0, obj.n.next.length-1))
         bottomDisplay.textContent = obj.n.next
-    }
+        }
     handleError()
 }
 
-
 function handleResetEvt(){
-
     clearValues(true, true, true)
 }
 
 function clearValues(objNew=false, objOld=false, display=false){
 
-    if (objNew === true) {
+    if(objNew === true) {
         for (let i in obj.n){
             typeof obj.n[i] === 'number' ? obj.n[i] = '' : typeof obj.n[i] === 'string' ? obj.n[i] = '' : obj.n[i]
         }
@@ -185,6 +182,7 @@ function handleError(){
 
     isNaN(obj.n.previous) ? obj.n.previous = 0 : obj.n.previous
     isNaN(obj.n.next) ? obj.n.next = 0 : obj.n.next
+
     if (bottomDisplay.textContent === "NaN"){
         bottomDisplay.textContent = '0'
     }
