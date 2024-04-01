@@ -26,26 +26,13 @@ const obj = {
         result: 0,
     }
 }
-// const obj = {
-//     previous: 0,
-//     operator: '',
-//     next: 0,
-//     result: 0,
-// }
-
-// const objOld = {
-//     previousOld: 0,
-//     operatorOld: '',
-//     nextOld: 0,
-//     resultOld: 0,
-// }
 
 let current;
 
 function operate(previous,next, operator){
 
-    obj.n.previous = parseFloat(previous)
-    obj.n.next = parseFloat(next)
+    // obj.n.previous = parseFloat(previous)
+    // obj.n.next = parseFloat(next)
 
     switch(operator){
         case "+":
@@ -77,7 +64,7 @@ function handleOperationsClickEvt(){
 
     // if (obj.n.previous === 0 && obj.o.previousOld !== 0){
     if (obj.n.previous === 0){
-        obj.n.previous = obj.o.resultOld = bottomDisplay.textContent    
+        obj.n.previous = obj.o.resultOld = parseFloat(bottomDisplay.textContent)    
         obj.n.operator = this.value
         topDisplay.textContent = obj.n.previous + obj.n.operator  
         console.log(`1`)
@@ -91,9 +78,10 @@ function handleOperationsClickEvt(){
         obj.n.operator = this.value
         topDisplay.textContent = obj.n.result + obj.n.operator 
             
-        clearValues()
+        clearValues(true,false,false)
+
         console.log(`3`)
-        obj.n.previous = bottomDisplay.textContent
+        obj.n.previous = parseFloat(bottomDisplay.textContent)
         obj.n.operator = this.value
 
         } 
@@ -109,13 +97,13 @@ function handleNumbersClickEvt(){
 
     if (obj.n.operator === ''){
         obj.n.previous += this.value
-        obj.n.previous.charAt(0) === '0' ? obj.n.previous = [...obj.n.previous].splice(1).join('') : obj.n.previous
+        obj.n.previous.charAt(0) === '0' ? obj.n.previous = parseFloat([...obj.n.previous].splice(1).join('')) : obj.n.previous = parseFloat(obj.n.previous)
         bottomDisplay.textContent = obj.n.previous
         current = 'previous'
     } 
     else {
         obj.n.next += this.value
-        obj.n.next.charAt(0) === '0' ? obj.n.next = [...obj.n.next].splice(1).join('') : obj.n.next
+        obj.n.next.charAt(0) === '0' ? obj.n.next = parseFloat([...obj.n.next].splice(1).join('')) : obj.n.next = parseFloat(obj.n.next)
         bottomDisplay.textContent = obj.n.next
         current = 'next'
     }
@@ -127,17 +115,19 @@ function handleEqualsEvt(){
         operate(obj.n.previous, obj.n.next, obj.n.operator)
         topDisplay.textContent = `${obj.n.previous} ${obj.n.operator} ${obj.n.next} =`
         cpyObjectToOld()
-        clearValues()    
+        clearValues(true,false,false) 
+        current = undefined   
     } else if(obj.n.previous !== 0 && obj.n.next === 0){
-        topDisplay.textContent = `${obj.o.previousOld} ${obj.o.operatorOld} ${obj.o.nextOld} =`
-        clearValues()
+        obj.o.operatorOld !== '' ? topDisplay.textContent = `${obj.o.previousOld} ${obj.o.operatorOld} ${obj.o.nextOld} =` : topDisplay.textContent = ''
+        clearValues(true,false,false) 
         }
+
 }
 
 function handleCurrentEntryEvt(){
 
     if (current === undefined){
-        clearValues()
+        clearValues(true,false,false) 
         obj.n.result = ''
         bottomDisplay.textContent = '0'
         topDisplay.textContent = ''
@@ -150,30 +140,39 @@ function handleCurrentEntryEvt(){
 
 function handleCalcDeleteEvt(){
 
+    
     if(current === 'previous'){
-        obj.n.previous = obj.n.previous.slice(0, obj.n.previous.length-1)
-        bottomDisplay.textContent = obj.previous
+        obj.n.previous = obj.n.previous.toString()
+        obj.n.previous = parseInt(obj.n.previous.slice(0, obj.n.previous.length-1))
+        bottomDisplay.textContent = obj.n.previous
     } else if(current === 'next'){
-        obj.n.next = obj.n.next.slice(0, obj.n.next.length-1)
+        obj.n.next = obj.n.next.toString()
+        obj.n.next = parseFloat(obj.n.next.slice(0, obj.n.next.length-1))
         bottomDisplay.textContent = obj.n.next
     }
+    handleError()
 }
+
 
 function handleResetEvt(){
-
-    clearValues()
-    obj.n.result = ''
-    bottomDisplay.textContent = '0'
-    topDisplay.textContent = ''
+    clearValues(true, true, true)
 }
 
-function clearValues(){
-
-    obj.n.previous=0
-    obj.n.next=0
-    obj.n.operator = ''
-    obj.n.result = 0
-    current = undefined
+function clearValues(objNew=false, objOld=false, display=false){
+    if (objNew === true) {
+        for (let i in obj.n){
+            typeof obj.n[i] === 'number' ? obj.n[i] = 0 : typeof obj.n[i] === 'string' ? obj.n[i] = '' : obj.n[i]
+        }
+    }
+    if(objOld === true){
+        for (let i in obj.o){
+            typeof obj.o[i] === 'number' ? obj.o[i] = 0 : typeof obj.o[i] === 'string' ? obj.o[i] = '' : obj.o[i]
+        }
+    }
+    if(display === true){
+        bottomDisplay.textContent = '0'
+        topDisplay.textContent = ''
+    }
 }
 
 function cpyObjectToOld(){
@@ -182,6 +181,13 @@ function cpyObjectToOld(){
     obj.o.operatorOld = obj.n.operator
     obj.o.nextOld = obj.n.next
     obj.o.resultOld = obj.n.result
+}
+
+function handleError(){
+
+    isNaN(obj.n.previous) ? obj.n.previous = 0 : obj.n.previous
+    isNaN(obj.n.next) ? obj.n.next = 0 : obj.n.next
+    bottomDisplay.textContent === "NaN" ? bottomDisplay.textContent = '0' : bottomDisplay.textContent
 }
 
 deleteButton.addEventListener("click", handleCalcDeleteEvt)
