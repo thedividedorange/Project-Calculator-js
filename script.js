@@ -175,21 +175,31 @@ function handleResetEvt(){
 
 function clearValues(objNew=false, objOld=false, display=false){
 
-    if(objNew === true) {
-        for (let i in obj.newV){
-            // typeof obj.newV[i] === 'number' ? obj.newV[i] = '' : typeof obj.newV[i] === 'string' ? obj.newV[i] = '' : obj.newV[i]
-            obj.newV[i] = ''
-        }
-    }
-    if(objOld === true){
-        for (let i in obj.oldV){
-            // typeof obj.oldV[i] === 'number' ? obj.oldV[i] = '' : typeof obj.oldV[i] === 'string' ? obj.oldV[i] = '' : obj.oldV[i]
-            obj.oldV[i] = ''
-        }
-    }
+    // if(objNew === true) {
+    //     for (let i in obj.newV){
+    //         // typeof obj.newV[i] === 'number' ? obj.newV[i] = '' : typeof obj.newV[i] === 'string' ? obj.newV[i] = '' : obj.newV[i]
+    //         obj.newV[i] = ''
+    //     }
+    // }
+    // if(objOld === true){
+    //     for (let i in obj.oldV){
+    //         // typeof obj.oldV[i] === 'number' ? obj.oldV[i] = '' : typeof obj.oldV[i] === 'string' ? obj.oldV[i] = '' : obj.oldV[i]
+    //         obj.oldV[i] = ''
+    //     }
+    // }
+
+    objNew === true ? clearObj(obj.newV) : obj.newV
+    objOld === true ? clearObj(obj.oldV) : obj.oldV
+    
     if(display === true){
         bottomDisplay.textContent = '0'
         topDisplay.textContent = ''
+    }
+}
+
+function clearObj(objct){
+    for (let i in objct){
+        objct[i] = ''
     }
 }
 
