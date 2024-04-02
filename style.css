@@ -85,17 +85,33 @@ header{
     padding: 0.2em;
 }
 
-
-
-.calcButtons .operation, .calcButtons .ce, .calcButtons .reset, .calcButtons .delete{
+.calcButtons .operation, 
+.calcButtons .ce, 
+.calcButtons .reset, 
+.calcButtons .delete,
+.calcButtons .percent,
+.calcButtons .equals
+{
     background-color:rgb(39, 39, 39);
 }
 
-.calcButtons .operation:hover, .calcButtons .ce:hover, .calcButtons .reset:hover, .calcButtons .delete:hover{
+.calcButtons .operation:hover, 
+.calcButtons .ce:hover, 
+.calcButtons .reset:hover, 
+.calcButtons .delete:hover,
+.calcButtons .percent:hover,
+.calcButtons .equals:hover
+{
     background-color: rgb(55 54 54);
 }
 
-.calcButtons .operation:focus, .calcButtons .ce:focus, .calcButtons .reset:focus, .calcButtons .delete:focus {
+.calcButtons .operation:focus,
+.calcButtons .ce:focus,
+.calcButtons .reset:focus,
+.calcButtons .delete:focus,
+.calcButtons .percent:focus,
+.calcButtons .equals:focus
+{
     background-color:rgb(39, 39, 39);
 }
 
