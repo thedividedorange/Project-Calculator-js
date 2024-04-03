@@ -15,8 +15,8 @@ const operations = {
     multiply: (a, b) => a * b,
     percent: (a, b) => {
         const {newV} = obj
-        newV.next = a * b / 100        
-        return a+newV.next
+        b = newV.next = a * b / 100        
+        return a+b
     },
 }
 
@@ -244,8 +244,14 @@ function handleError(){
         
     } else if (bottomDisplay.textContent === "Infinity" && newV.operator === '÷'){
         bottomDisplay.textContent = 'Cannot Divide by 0'
+        
     }
 }
+// function updateDisplay(top, bottom){
+//     bottomDisplay.textContent = bottom
+    
+// }
+// updateDisplay("bottomDisplay:0, topDisplay:1")
 
 deleteButton.addEventListener("click", handleCalcDeleteEvt)
 currentEntry.addEventListener("click", handleCurrentEntryEvt)
