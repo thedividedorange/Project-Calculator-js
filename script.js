@@ -14,19 +14,19 @@ const operations = {
     divide: (a, b) => a / b,
     multiply: (a, b) => a * b,
     percent: (a, b) => {
-        const {newV} = obj
-        b = newV.next = a * b / 100        
+        const {newState} = calcState
+        b = newState.next = a * b / 100        
         return a+b
     },
 }
 
-const obj = {
-    oldV: { previous: '',
+const calcState = {
+    oldState: { previous: '',
             operator: '',
             next: '',
             result: '',
     },
-    newV: { previous: '',
+    newState: { previous: '',
             operator: '',
             next: '',
             result: '',
@@ -36,127 +36,127 @@ const obj = {
 
 function operate(previous,next, operator){
 
-    const {newV} = obj
+    const {newState} = calcState
 
     switch(operator){
         case "+":
-            newV.result = operations.add(previous,next)
+            newState.result = operations.add(previous,next)
             break;
         case "-":
-            newV.result = operations.substract(previous,next)
+            newState.result = operations.substract(previous,next)
             break;
         case "*":
-            newV.result = operations.multiply(previous,next)
+            newState.result = operations.multiply(previous,next)
             break;
         case "÷":
-            newV.result = operations.divide(previous,next)
+            newState.result = operations.divide(previous,next)
             break;
         case "%":
-            newV.result = operations.percent(previous,next)
+            newState.result = operations.percent(previous,next)
             break;
         default:
             return
     }
-    return newV.result
+    return newState.result
 }
 
 function handleOperationsClickEvt(){
 
-    const {oldV, newV} = obj
+    const {oldState, newState} = calcState
 
-    if (newV.previous === ''){
-        newV.previous = oldV.result = parseFloat(bottomDisplay.textContent)    
-        newV.operator = this.value
+    if (newState.previous === ''){
+        newState.previous = oldState.result = parseFloat(bottomDisplay.textContent)    
+        newState.operator = this.value
 
-        topDisplay.textContent = newV.previous + newV.operator
+        topDisplay.textContent = newState.previous + newState.operator
 
-    } else if (newV.previous !== '' && newV.next !== ''){
-        bottomDisplay.textContent = operate(newV.previous, newV.next, newV.operator)
+    } else if (newState.previous !== '' && newState.next !== ''){
+        bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
 
-        cpyObjectToOld()
+        copyObjectToOld(oldState, newState)
 
-        newV.operator = this.value
-        topDisplay.textContent = newV.result + newV.operator  
+        newState.operator = this.value
+        topDisplay.textContent = newState.result + newState.operator  
 
         clearValues(true,false,false)
 
-        newV.previous = parseFloat(bottomDisplay.textContent)
-        newV.operator = this.value
+        newState.previous = parseFloat(bottomDisplay.textContent)
+        newState.operator = this.value
 
     } else {
-        newV.operator = this.value
-        topDisplay.textContent = newV.previous + newV.operator
-        obj.current = undefined
+        newState.operator = this.value
+        topDisplay.textContent = newState.previous + newState.operator
+        calcState.current = undefined
     }
 }
 
 function handleNumbersClickEvt(){
 
-    const {newV} = obj
+    const {newState} = calcState
     
-    if (newV.operator === ''){
+    if (newState.operator === ''){
         
-        newV.previous += this.value
-        newV.previous.charAt(0) === '0' && newV.previous.length >= 2  ? 
-        newV.previous = parseFloat([...newV.previous].splice(1).join('')) : newV.previous = parseFloat(newV.previous)
+        newState.previous += this.value
+        newState.previous.charAt(0) === '0' && newState.previous.length >= 2  ? 
+        newState.previous = parseFloat([...newState.previous].splice(1).join('')) : newState.previous = parseFloat(newState.previous)
 
-        bottomDisplay.textContent = newV.previous
-        obj.current = 'previous'
+        bottomDisplay.textContent = newState.previous
+        calcState.current = 'previous'
 
     } else {
-        newV.next += this.value
-        newV.next.charAt(0) === '0' && newV.previous.length >= 2 ? 
-        newV.next = parseFloat([...newV.next].splice(1).join('')) : newV.next = parseFloat(newV.next)
+        newState.next += this.value
+        newState.next.charAt(0) === '0' && newState.previous.length >= 2 ? 
+        newState.next = parseFloat([...newState.next].splice(1).join('')) : newState.next = parseFloat(newState.next)
 
-        bottomDisplay.textContent = newV.next
-        obj.current = 'next'
+        bottomDisplay.textContent = newState.next
+        calcState.current = 'next'
     }
 }
 
 function handlePercentEvt(){
 
-    const {newV} = obj
+    const {oldState, newState} = calcState
 
-    let swap = newV.operator
-    newV.operator = this.value
+    let swap = newState.operator
+    newState.operator = this.value
 
-    if (obj.current === 'previous'){
-        bottomDisplay.textContent = newV.previous = 0
-        newV.operator = swap
+    if (calcState.current === 'previous'){
+        bottomDisplay.textContent = newState.previous = 0
+        newState.operator = swap
         topDisplay.textContent = ''
 
-    } else if (obj.current === 'next'){
-        bottomDisplay.textContent = operate(newV.previous, newV.next, newV.operator)
-        newV.operator = swap
-        topDisplay.textContent = `${newV.previous} ${newV.operator} ${newV.next} =`
+    } else if (calcState.current === 'next'){
+        bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
+        newState.operator = swap
+        topDisplay.textContent = `${newState.previous} ${newState.operator} ${newState.next} =`
     
-        cpyObjectToOld()
+        copyObjectToOld(oldState, newState)
         clearValues(true,false,false)
-        obj.current = undefined
+        calcState.current = undefined
 
-    } else if (obj.current === undefined){
-        newV.operator = swap
+    } else if (calcState.current === undefined){
+        newState.operator = swap
     }
 }
 
 function handleEqualsEvt(){
 
-    const {oldV, newV} = obj
+    const {oldState, newState} = calcState
 
-    if (newV.previous !== '' && newV.next !== ''){
-        bottomDisplay.textContent = operate(newV.previous, newV.next, newV.operator)
-        topDisplay.textContent = `${newV.previous} ${newV.operator} ${newV.next} =`
+    if (newState.previous !== '' && newState.next !== ''){
+        bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
+        topDisplay.textContent = `${newState.previous} ${newState.operator} ${newState.next} =`
 
-        cpyObjectToOld()
+        copyObjectToOld(oldState, newState)
         handleError()
         clearValues(true,false,false)
 
-        obj.current = undefined
+        calcState.current = undefined
 
-    } else if (newV.previous !== '' && newV.next === ''){
+    } else if (newState.previous !== '' && newState.next === ''){
 
-        if (newV.previous === oldV.result){
-            topDisplay.textContent = `${oldV.previous} ${oldV.operator} ${oldV.next} =`
+        if (newState.previous === oldState.result){
+            topDisplay.textContent = `${oldState.previous} ${oldState.operator} ${oldState.next} =`
         } else {
             topDisplay.textContent = ''
         }
@@ -167,34 +167,34 @@ function handleEqualsEvt(){
 
 function handleCurrentEntryEvt(){
 
-    const {newV} = obj
+    const {newState} = calcState
 
-    if (obj.current === undefined){
+    if (calcState.current === undefined){
         clearValues(true,false,true) 
 
-    } else if (obj.current === 'previous'){
-        bottomDisplay.textContent = newV.previous = 0
+    } else if (calcState.current === 'previous'){
+        bottomDisplay.textContent = newState.previous = 0
 
-    } else if (obj.current === 'next'){
-        bottomDisplay.textContent = newV.next = 0
+    } else if (calcState.current === 'next'){
+        bottomDisplay.textContent = newState.next = 0
     }
 }
 
 function handleCalcDeleteEvt(){
 
-    const {newV} = obj
+    const {newState} = calcState
 
-    if (obj.current === 'previous'){
-        newV.previous = newV.previous.toString()
-        newV.previous = parseInt(newV.previous.slice(0, newV.previous.length-1))
+    if (calcState.current === 'previous'){
+        newState.previous = newState.previous.toString()
+        newState.previous = parseInt(newState.previous.slice(0, newState.previous.length-1))
 
-        bottomDisplay.textContent = newV.previous
+        bottomDisplay.textContent = newState.previous
 
-    } else if (obj.current === 'next'){
-        newV.next = newV.next.toString()
-        newV.next = parseFloat(newV.next.slice(0, newV.next.length-1))
+    } else if (calcState.current === 'next'){
+        newState.next = newState.next.toString()
+        newState.next = parseFloat(newState.next.slice(0, newState.next.length-1))
 
-        bottomDisplay.textContent = newV.next
+        bottomDisplay.textContent = newState.next
     }
 
     handleError()
@@ -206,8 +206,8 @@ function handleResetEvt(){
 
 function clearValues(objNew=false, objOld=false, display=false){
 
-    objNew === true ? clearObj(obj.newV) : obj.newV
-    objOld === true ? clearObj(obj.oldV) : obj.oldV
+    objNew === true ? clearObj(calcState.newState) : calcState.newState
+    objOld === true ? clearObj(calcState.oldState) : calcState.oldState
 
     if(display === true){
         bottomDisplay.textContent = '0'
@@ -216,33 +216,30 @@ function clearValues(objNew=false, objOld=false, display=false){
 }
 
 function clearObj(objct){
-
     for (let i in objct){
         objct[i] = ''
     }
 }
 
-function cpyObjectToOld(){
-
-    const {oldV, newV} = obj
-
-    oldV.previous = newV.previous
-    oldV.operator = newV.operator
-    oldV.next = newV.next
-    oldV.result = newV.result
+function copyObjectToOld(oldObjct,newObjct){
+    for(oldkeys in oldObjct){
+        for(newkeys in newObjct){
+            oldkeys === newkeys ? oldObjct[oldkeys] = newObjct[newkeys] : oldObjct[oldkeys]
+        }
+    }
 }
 
 function handleError(){
 
-    const {newV} = obj
+    const {newState} = calcState
 
-    isNaN(newV.previous) ? newV.previous = 0 : newV.previous
-    isNaN(newV.next) ? newV.next = 0 : newV.next
+    isNaN(newState.previous) ? newState.previous = 0 : newState.previous
+    isNaN(newState.next) ? newState.next = 0 : newState.next
 
     if (bottomDisplay.textContent === "NaN"){
         bottomDisplay.textContent = '0'
         
-    } else if (bottomDisplay.textContent === "Infinity" && newV.operator === '÷'){
+    } else if (bottomDisplay.textContent === "Infinity" && newState.operator === '÷'){
         bottomDisplay.textContent = 'Cannot Divide by 0'
         
     }
