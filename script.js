@@ -59,24 +59,10 @@ function operate(previous,next, operator){
             return
     }
 
-    
     return checkFloatLength(newState.result)
 }
 
-function checkFloatLength(element){
 
-    const array = element.toString().split(".")
-
-    if(array.length === 1){
-        return array[0]
-    } else if (array.length === 2) {
-        if (array[1].length >= 5) {
-            return element.toPrecision(6) 
-        } else {
-            return element
-        }
-    }
-}
 
 function handleOperationsClickEvt(){
 
@@ -121,7 +107,6 @@ function handleNumbersClickEvt(){
         newState.previous.charAt(0) === '0' && newState.previous.length >= 2  ? 
         newState.previous = parseFloat([...newState.previous].splice(1).join('')) : newState.previous = parseFloat(newState.previous)
 
-        console.log(newState.previous)
         // x = checkFloatLength(newState.previous)
         // bottomDisplay.textContent = x
         bottomDisplay.textContent = newState.previous
@@ -271,58 +256,60 @@ function handleError(){
     }
 }
 
-function updateDisplay(topDisplayValue, bottomDisplayValue){
-    if (topDisplayValue){
-        // console.log(topDisplayValue)
-        // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
-        topDisplay.textContent = topDisplayValue
-        // console.log(top)
-    }
-    if (bottomDisplayValue) bottomDisplay.textContent = bottomDisplayValue
-}
-// updateDisplay("bottomDisplay", false)
+// function updateDisplay(topDisplayValue, bottomDisplayValue){
+//     if (topDisplayValue){
+//         // console.log(topDisplayValue)
+//         // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
+//         topDisplay.textContent = topDisplayValue
+//         // console.log(top)
+//     }
+//     if (bottomDisplayValue) bottomDisplay.textContent = bottomDisplayValue
+// }
+// // updateDisplay("bottomDisplay", false)
 
 function handleDecimalButton(){
+    
     const {newState} = calcState
+    const array = [calcState.current]
 
-    if(calcState.current === 'previous'){
-        const state = checkDecimalPoint('previous')
-        if(!state){
-            newState.previous = newState.previous.toString().concat(".")
-            bottomDisplay.textContent += `.`
+    array.forEach((value) => {
+        const state = checkDecimalPoint(value)
+        if(!state && state !== `undefined`){
+            value === `previous` ? newState.previous = newState.previous.toString().concat(".") :
+            value === `next` ? newState.next = newState.next.toString().concat(".") : newState.next
         }
-    } else if (calcState.current === 'next'){
-        const state = checkDecimalPoint('next')
-        if(!state){
-            newState.next = newState.next.toString().concat(".")
-            bottomDisplay.textContent += `.`
-        }
-    }
+        bottomDisplay.textContent += `.`
+    })
 }
 
 function checkDecimalPoint(currentState){
-    const {newState} = calcState
 
-    if (currentState === 'previous'){
+    const {newState} = calcState
+    
+    if (currentState === `previous`){
         if(newState.previous.toString().includes(".")){
-            return true
+            console.log(`prev`)
+            return `true`
         }
     } else if (currentState === 'next'){
         if(newState.next.toString().includes(".")){
-            return true
+            console.log(`next`)
+            return `true`
         }
     } else {
-        return false
+        console.log(`undefined`)
+        return
     }
+    return false
 }
 
 
+function checkFloatLength(element){
 
-    // if (length >= 5){
-    //     return element.toPrecision(5)
-    // }else{
-    //     return element
-    // }
+    const [array,y] = element.toString().split(".")
+    
+    return typeof y !== 'undefined' ? y.length >=4 ? element.toFixed(4) : element : array
+}
 
 decimal.addEventListener("click", handleDecimalButton)
 deleteButton.addEventListener("click", handleCalcDeleteEvt)
