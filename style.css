@@ -90,7 +90,8 @@ header{
 .calcButtons .reset, 
 .calcButtons .delete,
 .calcButtons .percent,
-.calcButtons .equals
+.calcButtons .equals,
+.calcButtons .decimal
 {
     background-color:rgb(39, 39, 39);
 }
@@ -100,7 +101,8 @@ header{
 .calcButtons .reset:hover, 
 .calcButtons .delete:hover,
 .calcButtons .percent:hover,
-.calcButtons .equals:hover
+.calcButtons .equals:hover,
+.calcButtons .decimal:hover
 {
     background-color: rgb(55 54 54);
 }
@@ -110,7 +112,8 @@ header{
 .calcButtons .reset:focus,
 .calcButtons .delete:focus,
 .calcButtons .percent:focus,
-.calcButtons .equals:focus
+.calcButtons .equals:focus,
+.calcButtons .decimal:focus
 {
     background-color:rgb(39, 39, 39);
 }
