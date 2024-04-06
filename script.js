@@ -5,6 +5,7 @@ const currentEntry = document.querySelector(".calcButtons button.ce")
 const resetCalculator = document.querySelector(".calcButtons button.reset")
 const equals = document.querySelector(".calcButtons button.equals")
 const percent = document.querySelector(".calcButtons button.percent")
+const decimal = document.querySelector(".calcButtons button.decimal")
 const topDisplay = document.querySelector(".display .top")
 const bottomDisplay = document.querySelector(".display .bottom")
 
@@ -57,7 +58,24 @@ function operate(previous,next, operator){
         default:
             return
     }
-    return newState.result
+
+    
+    return checkFloatLength(newState.result)
+}
+
+function checkFloatLength(element){
+
+    const array = element.toString().split(".")
+
+    if(array.length === 1){
+        return array[0]
+    } else if (array.length === 2) {
+        if (array[1].length >= 5) {
+            return element.toPrecision(6) 
+        } else {
+            return element
+        }
+    }
 }
 
 function handleOperationsClickEvt(){
@@ -69,6 +87,7 @@ function handleOperationsClickEvt(){
         newState.operator = this.value
 
         topDisplay.textContent = newState.previous + newState.operator
+        // updateDisplay(newState.previous + newState.operator, false)
 
     } else if (newState.previous !== '' && newState.next !== ''){
         bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
@@ -77,6 +96,7 @@ function handleOperationsClickEvt(){
 
         newState.operator = this.value
         topDisplay.textContent = newState.result + newState.operator  
+        // updateDisplay(newState.result + newState.operator, false)
 
         clearValues(true,false,false)
 
@@ -86,6 +106,7 @@ function handleOperationsClickEvt(){
     } else {
         newState.operator = this.value
         topDisplay.textContent = newState.previous + newState.operator
+        // updateDisplay(newState.previous + newState.operator, false)
         calcState.current = undefined
     }
 }
@@ -100,7 +121,11 @@ function handleNumbersClickEvt(){
         newState.previous.charAt(0) === '0' && newState.previous.length >= 2  ? 
         newState.previous = parseFloat([...newState.previous].splice(1).join('')) : newState.previous = parseFloat(newState.previous)
 
+        console.log(newState.previous)
+        // x = checkFloatLength(newState.previous)
+        // bottomDisplay.textContent = x
         bottomDisplay.textContent = newState.previous
+        // updateDisplay(false,newState.previous)
         calcState.current = 'previous'
 
     } else {
@@ -109,6 +134,7 @@ function handleNumbersClickEvt(){
         newState.next = parseFloat([...newState.next].splice(1).join('')) : newState.next = parseFloat(newState.next)
 
         bottomDisplay.textContent = newState.next
+        // updateDisplay(false,newState.next)
         calcState.current = 'next'
     }
 }
@@ -244,12 +270,61 @@ function handleError(){
         
     }
 }
-// function updateDisplay(top, bottom){
-//     bottomDisplay.textContent = bottom
-    
-// }
-// updateDisplay("bottomDisplay:0, topDisplay:1")
 
+function updateDisplay(topDisplayValue, bottomDisplayValue){
+    if (topDisplayValue){
+        // console.log(topDisplayValue)
+        // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
+        topDisplay.textContent = topDisplayValue
+        // console.log(top)
+    }
+    if (bottomDisplayValue) bottomDisplay.textContent = bottomDisplayValue
+}
+// updateDisplay("bottomDisplay", false)
+
+function handleDecimalButton(){
+    const {newState} = calcState
+
+    if(calcState.current === 'previous'){
+        const state = checkDecimalPoint('previous')
+        if(!state){
+            newState.previous = newState.previous.toString().concat(".")
+            bottomDisplay.textContent += `.`
+        }
+    } else if (calcState.current === 'next'){
+        const state = checkDecimalPoint('next')
+        if(!state){
+            newState.next = newState.next.toString().concat(".")
+            bottomDisplay.textContent += `.`
+        }
+    }
+}
+
+function checkDecimalPoint(currentState){
+    const {newState} = calcState
+
+    if (currentState === 'previous'){
+        if(newState.previous.toString().includes(".")){
+            return true
+        }
+    } else if (currentState === 'next'){
+        if(newState.next.toString().includes(".")){
+            return true
+        }
+    } else {
+        return false
+    }
+}
+
+
+
+    // if (length >= 5){
+    //     return element.toPrecision(5)
+    // }else{
+    //     return element
+    // }
+
+decimal.addEventListener("click", handleDecimalButton)
 deleteButton.addEventListener("click", handleCalcDeleteEvt)
 currentEntry.addEventListener("click", handleCurrentEntryEvt)
 resetCalculator.addEventListener("click", handleResetEvt)
