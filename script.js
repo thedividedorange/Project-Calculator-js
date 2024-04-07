@@ -318,23 +318,10 @@ function isDecimalEnd(){
     let temp
 
     const result = [currentState].map((value) => {
-        // if (value === 'previous'){
-        //     if(newState.previous !== ''){
-        //         temp = newState.previous.toString()
-        //         temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
-        //         return newState.previous = parseFloat(temp)
-        //     }
-        // } else if(value === 'next'){
-        //     if(newState.next !== ''){
-        //         temp = newState.next.toString()
-        //         temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
-        //         return newState.next = parseFloat(temp)
-        //     }
-        // } else return
-        if (value === 'previous'){
-            if(newState.previous !== '') temp = newState.previous.toString()
-        } else if(value === 'next'){
-            if(newState.next !== '') temp = newState.next.toString()
+        if (value === 'previous' && newState.previous !== ''){
+            temp = newState.previous.toString()
+        } else if (value === 'next' && newState.next !== '') {
+            temp = newState.next.toString()
         } else return
 
         temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
