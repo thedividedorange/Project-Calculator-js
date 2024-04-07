@@ -74,18 +74,15 @@ function handleOperationsClickEvt(){
         newState.operator = this.value
 
         topDisplay.textContent = newState.previous + newState.operator
-        console.log(`1`)
 
     } else if (newState.previous !== '' && newState.next !== ''){
         bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
 
         copyObjectToOld(oldState, newState)
-        console.log(`2`)
         newState.operator = this.value
         topDisplay.textContent = newState.result + newState.operator  
 
         clearValues(true, false, false, false)
-        console.log(`3`)
         newState.previous = parseFloat(bottomDisplay.textContent)
         bottomDisplay.textContent = '0'
         newState.operator = this.value
@@ -94,7 +91,6 @@ function handleOperationsClickEvt(){
         newState.operator = this.value
         topDisplay.textContent = newState.previous + newState.operator
         calcState.current = undefined
-        console.log(`4`)
     }
 }
 
@@ -170,6 +166,7 @@ function handleEqualsEvt(){
 
         if (newState.previous === oldState.result){
             topDisplay.textContent = `${oldState.previous} ${oldState.operator} ${oldState.next} =`
+            bottomDisplay.textContent = `${oldState.result}`
         } else {
             topDisplay.textContent = ''
         }
@@ -321,19 +318,27 @@ function isDecimalEnd(){
     let temp
 
     const result = [currentState].map((value) => {
+        // if (value === 'previous'){
+        //     if(newState.previous !== ''){
+        //         temp = newState.previous.toString()
+        //         temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
+        //         return newState.previous = parseFloat(temp)
+        //     }
+        // } else if(value === 'next'){
+        //     if(newState.next !== ''){
+        //         temp = newState.next.toString()
+        //         temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
+        //         return newState.next = parseFloat(temp)
+        //     }
+        // } else return
         if (value === 'previous'){
-            if(newState.previous !== ''){
-                temp = newState.previous.toString()
-                temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
-                return newState.previous = parseFloat(temp)
-            }
+            if(newState.previous !== '') temp = newState.previous.toString()
         } else if(value === 'next'){
-            if(newState.next !== ''){
-                temp = newState.next.toString()
-                temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
-                return newState.next = parseFloat(temp)
-            }
+            if(newState.next !== '') temp = newState.next.toString()
         } else return
+
+        temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
+        return value === 'previous' ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
     })
 
     if(typeof result[0] !== 'undefined') bottomDisplay.textContent = result
