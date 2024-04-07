@@ -225,7 +225,7 @@ function clearValues(objNew=false, objOld=false, display=false, currentState=fal
     }
 }
 
-function clearObj(objct, currentState=false){
+function clearObj(objct, currentState){
     for (let i in objct){
         objct[i] = ''
     }
@@ -297,19 +297,14 @@ function handleDecimalButton(){
 function checkDecimalPoint(currentState){
 
     const {newState} = calcState
-    
-    if (currentState === `previous`){
-        if(newState.previous.toString().includes(".")){
-            return true
-        }
-    } else if (currentState === 'next'){
-        if(newState.next.toString().includes(".")){
-            return true
-        }
-    } else {
-        return false
-    }
+
+    if (currentState === `previous` && newState.previous.toString().includes(".")){
+        return true
+    } else if (currentState === 'next' && newState.next.toString().includes(".")){
+        return true
+    } else return false
 }
+    
 
 function isDecimalEnd(){
 
