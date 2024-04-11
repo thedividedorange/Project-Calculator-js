@@ -146,18 +146,18 @@ function handlePercentEvt(){
     }
 }
 
-function handleEqualsEvt(){
+const handleEqualsEvt = () => {
 
     const {oldState, newState} = calcState
-
+    let topDisplay = false
+    let bottomDisplay = false
     isDecimalEnd()
 
     if (newState.previous !== '' && newState.next !== ''){
-        bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
-        topDisplay.textContent = `${newState.previous} ${newState.operator} ${newState.next} =`
+        bottomDisplay = operate(newState.previous, newState.next, newState.operator)
+        topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
 
         copyObjectToOld(oldState, newState)
-        handleError()
         clearValues(true, false, false, false)
 
         calcState.current = undefined
@@ -165,28 +165,32 @@ function handleEqualsEvt(){
     } else if (newState.previous !== '' && newState.next === ''){
 
         if (newState.previous === oldState.result){
-            topDisplay.textContent = `${oldState.previous} ${oldState.operator} ${oldState.next} =`
-            bottomDisplay.textContent = `${oldState.result}`
+            topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`
+            bottomDisplay = `${oldState.result}`
         } else {
-            topDisplay.textContent = ''
+            topDisplay = ' '
         }
 
         clearValues(true, false, false, true) 
-    } 
+    } else return
+
+    handleError()
+    updateDisplay(topDisplay, bottomDisplay)
 }
 
-function handleCurrentEntryEvt(){
+const handleCurrentEntryEvt = () => {
 
     const {newState} = calcState
+    const currentState = getCurrentState()
 
-    if (calcState.current === undefined){
-        clearValues(true, false, true, false) 
-
-    } else if (calcState.current === 'previous'){
-        bottomDisplay.textContent = newState.previous = 0
-
-    } else if (calcState.current === 'next'){
-        bottomDisplay.textContent = newState.next = 0
+    if(currentState === 'previous'){
+        newState.previous = 0
+        updateDisplay(false, '0')
+    } else if(currentState === 'next'){
+        newState.next = 0
+        updateDisplay(false, '0')
+    } else {
+        clearValues(true, false, true, false)
     }
 }
 
@@ -207,8 +211,7 @@ const handleCalcDeleteEvt = () => {
         return value === `previous` ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
     })
 
-    if(result[0] !== undefined) bottomDisplay.textContent = result
-
+    if(result[0] !== undefined) updateDisplay(false, result)
     handleError()
 }
 
@@ -219,8 +222,8 @@ const handleError = () => {
     isNaN(newState.previous) ? newState.previous = 0 : newState.previous
     isNaN(newState.next) ? newState.next = 0 : newState.next
 
-    if (bottomDisplay.textContent === "NaN") bottomDisplay.textContent = '0'
-    if (bottomDisplay.textContent === "Infinity" && newState.operator === '÷') bottomDisplay.textContent = 'Cannot Divide by 0'
+    if (bottomDisplay.textContent === "NaN") updateDisplay(false, '0')
+    if (bottomDisplay.textContent === "Infinity" && newState.operator === '÷') updateDisplay(false, 'Cannot Divide by 0')
 }
 
 const handleResetEvt = () => clearValues(true, true, true, true)
@@ -230,10 +233,8 @@ const clearValues = (objNew=false, objOld=false, display=false, currentState=fal
     objNew === true ? clearObj(calcState.newState, currentState) : calcState.newState
     objOld === true ? clearObj(calcState.oldState, currentState) : calcState.oldState
 
-    if(display === true){
-        bottomDisplay.textContent = '0'
-        topDisplay.textContent = ''
-    }
+    if(display === true) updateDisplay(' ', '0')
+    
 }
 
 const clearObj = (objct, currentState) => {
@@ -251,16 +252,24 @@ const copyObjectToOld = (oldObjct,newObjct) => {
     }
 }
 
-// function updateDisplay(topDisplayValue, bottomDisplayValue){
-//     if (topDisplayValue){
-//         // console.log(topDisplayValue)
-//         // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
-//         topDisplay.textContent = topDisplayValue
-//         // console.log(top)
-//     }
-//     if (bottomDisplayValue) bottomDisplay.textContent = bottomDisplayValue
-// }
-// // updateDisplay("bottomDisplay", false)
+const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
+    if (topDisplayValue){
+        // console.log(topDisplayValue)
+        // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
+        topDisplay.textContent = topDisplayValue
+    }
+    if (bottomDisplayValue) {
+        if (operator){
+            switch(operator){
+                case "+":
+                    bottomDisplay.textContent += bottomDisplayValue
+                    break;
+                default:
+                    return
+            }        
+        } else bottomDisplay.textContent = bottomDisplayValue
+    }
+}
 
 const handleDecimalButton = () => {
     
@@ -276,23 +285,12 @@ const handleDecimalButton = () => {
             if(!isDecimal){
                 state === `previous` ? newState.previous = newState.previous.toString().concat(".") :
                 state === `next` ? newState.next = newState.next.toString().concat(".") : newState.next
-                bottomDisplay.textContent += `.`
+
+                updateDisplay(false, '.', '+')
             }
         }
     })
 }
-
-// function isStateEmpty(){
-//     const {newState} = calcState
-//     const currentState = getCurrentState()
-//     console.log(typeof newState.previous)
-
-//     if(currentState === 'previous' && newState.previous === ''){
-//         console.log('true')}
-//     else if(currentState === 'next' && newState.next === ''){
-//         console.log('next') }
-//     // } else if (currentState === )
-// }
 
 const checkDecimalPoint = (currentState) => {
 
@@ -322,14 +320,13 @@ const isDecimalEnd = () => {
         return value === 'previous' ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
     })
 
-    if(result[0] !== undefined) bottomDisplay.textContent = result
+    if(result[0] !== undefined) updateDisplay(false, result)
 }
 
 const getCurrentState = () => calcState.current
 
 const checkFloatLength = (element) => {
     const [array, decimalPoint] = element.toString().split(".")
-    console.log(decimalPoint)
     return decimalPoint !== undefined ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
 }
 
@@ -342,4 +339,4 @@ percent.addEventListener("click", handlePercentEvt)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
 buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
 
-//add arrow functions
+// handleCurrentEntryEvt, equals, update display
