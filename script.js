@@ -190,7 +190,7 @@ function handleCurrentEntryEvt(){
     }
 }
 
-function handleCalcDeleteEvt(){
+const handleCalcDeleteEvt = () => {
 
     const {newState} = calcState
     const currentState = getCurrentState()
@@ -206,8 +206,8 @@ function handleCalcDeleteEvt(){
         temp = parseFloat(temp.slice(0, temp.length-1))
         return value === `previous` ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
     })
- 
-    if(typeof result[0] !== 'undefined') bottomDisplay.textContent = result
+
+    if(result[0] !== undefined) bottomDisplay.textContent = result
 
     handleError()
 }
@@ -250,8 +250,6 @@ const copyObjectToOld = (oldObjct,newObjct) => {
         }
     }
 }
-
-
 
 // function updateDisplay(topDisplayValue, bottomDisplayValue){
 //     if (topDisplayValue){
@@ -324,14 +322,15 @@ const isDecimalEnd = () => {
         return value === 'previous' ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
     })
 
-    if(typeof result[0] !== 'undefined') bottomDisplay.textContent = result
+    if(result[0] !== undefined) bottomDisplay.textContent = result
 }
 
 const getCurrentState = () => calcState.current
 
 const checkFloatLength = (element) => {
     const [array, decimalPoint] = element.toString().split(".")
-    return typeof decimalPoint !== 'undefined' ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
+    console.log(decimalPoint)
+    return decimalPoint !== undefined ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
 }
 
 decimal.addEventListener("click", handleDecimalButton)
