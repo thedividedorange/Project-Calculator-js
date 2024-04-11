@@ -193,28 +193,39 @@ function handleCurrentEntryEvt(){
 function handleCalcDeleteEvt(){
 
     const {newState} = calcState
+    const currentState = getCurrentState()
+    let temp 
 
-    if (calcState.current === 'previous'){
-        newState.previous = newState.previous.toString()
-        newState.previous = parseFloat(newState.previous.slice(0, newState.previous.length-1))
-
-        bottomDisplay.textContent = newState.previous
-
-    } else if (calcState.current === 'next'){
-        newState.next = newState.next.toString()
-        newState.next = parseFloat(newState.next.slice(0, newState.next.length-1))
-
-        bottomDisplay.textContent = newState.next
-    }
+    const result = [currentState].map((value) => {
+        if(value === `previous`){
+            temp = newState.previous.toString()
+        } else if (value === `next`){
+            temp = newState.next.toString()
+        } else return
+  
+        temp = parseFloat(temp.slice(0, temp.length-1))
+        return value === `previous` ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
+    })
+ 
+    if(typeof result[0] !== 'undefined') bottomDisplay.textContent = result
 
     handleError()
 }
 
-function handleResetEvt(){
-    clearValues(true, true, true, true)
+const handleError = () => {
+
+    const {newState} = calcState
+
+    isNaN(newState.previous) ? newState.previous = 0 : newState.previous
+    isNaN(newState.next) ? newState.next = 0 : newState.next
+
+    if (bottomDisplay.textContent === "NaN") bottomDisplay.textContent = '0'
+    if (bottomDisplay.textContent === "Infinity" && newState.operator === '÷') bottomDisplay.textContent = 'Cannot Divide by 0'
 }
 
-function clearValues(objNew=false, objOld=false, display=false, currentState=false){
+const handleResetEvt = () => clearValues(true, true, true, true)
+
+const clearValues = (objNew=false, objOld=false, display=false, currentState=false) => {
 
     objNew === true ? clearObj(calcState.newState, currentState) : calcState.newState
     objOld === true ? clearObj(calcState.oldState, currentState) : calcState.oldState
@@ -225,14 +236,14 @@ function clearValues(objNew=false, objOld=false, display=false, currentState=fal
     }
 }
 
-function clearObj(objct, currentState){
+const clearObj = (objct, currentState) => {
     for (let i in objct){
         objct[i] = ''
     }
     if(currentState) calcState.current = ''
 }
 
-function copyObjectToOld(oldObjct,newObjct){
+const copyObjectToOld = (oldObjct,newObjct) => {
     for(oldkeys in oldObjct){
         for(newkeys in newObjct){
             oldkeys === newkeys ? oldObjct[oldkeys] = newObjct[newkeys] : oldObjct[oldkeys]
@@ -240,16 +251,7 @@ function copyObjectToOld(oldObjct,newObjct){
     }
 }
 
-function handleError(){
 
-    const {newState} = calcState
-
-    isNaN(newState.previous) ? newState.previous = 0 : newState.previous
-    isNaN(newState.next) ? newState.next = 0 : newState.next
-
-    if (bottomDisplay.textContent === "NaN") bottomDisplay.textContent = '0'
-    if (bottomDisplay.textContent === "Infinity" && newState.operator === '÷') bottomDisplay.textContent = 'Cannot Divide by 0'
-}
 
 // function updateDisplay(topDisplayValue, bottomDisplayValue){
 //     if (topDisplayValue){
@@ -262,7 +264,7 @@ function handleError(){
 // }
 // // updateDisplay("bottomDisplay", false)
 
-function handleDecimalButton(){
+const handleDecimalButton = () => {
     
     const {newState} = calcState
     const currentState = [getCurrentState()]
@@ -294,7 +296,7 @@ function handleDecimalButton(){
 //     // } else if (currentState === )
 // }
 
-function checkDecimalPoint(currentState){
+const checkDecimalPoint = (currentState) => {
 
     const {newState} = calcState
 
@@ -305,8 +307,7 @@ function checkDecimalPoint(currentState){
     } else return false
 }
     
-
-function isDecimalEnd(){
+const isDecimalEnd = () => {
 
     const {newState} = calcState
     const currentState = getCurrentState()
@@ -326,11 +327,9 @@ function isDecimalEnd(){
     if(typeof result[0] !== 'undefined') bottomDisplay.textContent = result
 }
 
-function getCurrentState() {
-    return calcState.current
-}
+const getCurrentState = () => calcState.current
 
-function checkFloatLength(element){
+const checkFloatLength = (element) => {
     const [array, decimalPoint] = element.toString().split(".")
     return typeof decimalPoint !== 'undefined' ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
 }
@@ -344,4 +343,4 @@ percent.addEventListener("click", handlePercentEvt)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
 buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
 
-//fix backspace function, clear all function button, decimal function
+//add arrow functions
