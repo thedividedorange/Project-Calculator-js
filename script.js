@@ -147,7 +147,7 @@ const handleEqualsButton = () => {
 
     const {oldState, newState} = calcState
     isDecimalEnd()
-    // Initialise topDisplay & BottomDisplay Variables to false
+    
     let topDisplay = false
     let bottomDisplay = false
 
@@ -245,8 +245,8 @@ const handleError = () => {
 const isNaNOrInfinity = (Objct) => {
     Object.keys(Objct).forEach((key) => {
         if (key !== 'current') { 
-            for (let keys in Objct[key]) {
-                if (!isFinite(Objct[key][keys]) && keys !== 'operator') Objct[key][keys] = 0;   
+            for (let subKey in Objct[key]) {
+                if (!isFinite(Objct[key][subKey]) && subKey !== 'operator') Objct[key][subKey] = 0;   
             }
         }
     });
