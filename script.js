@@ -70,7 +70,8 @@ function handleOperationsClickEvt(){
     isDecimalEnd()
 
     if (newState.previous === ''){
-        newState.previous = oldState.result = parseFloat(bottomDisplay.textContent)    
+        // newState.previous = oldState.result = parseFloat(bottomDisplay.textContent)    
+        newState.previous = oldState.result
         newState.operator = this.value
 
         topDisplay.textContent = newState.previous + newState.operator
@@ -226,8 +227,8 @@ const handleCalcDeleteButton = () => {
 
 const handleError = () => {
 
-    const {newState} = calcState
-    isNaNOrInfinity()
+    // const {newState} = calcState
+    isNaNOrInfinity(calcState)
     // isNaN(newState.previous) ? newState.previous = 0 : newState.previous
     // isNaN(newState.next) ? newState.next = 0 : newState.next
     const displayError = bottomDisplay.textContent
@@ -246,12 +247,13 @@ const handleError = () => {
 }
 
 // function to loop through Object and check for NaN or Infinity replacing it with 0
+// we do not want to include current key and operator
 
-const isNaNOrInfinity = () => {
-    Object.keys(calcState).forEach((key) => {
-        if (key !== 'current') {
-            for (let keys in calcState[key]) {
-                if (!isFinite(calcState[key][keys]) && keys !== 'operator') calcState[key][keys] = 0;   
+const isNaNOrInfinity = (Objct) => {
+    Object.keys(Objct).forEach((key) => {
+        if (key !== 'current') { 
+            for (let keys in Objct[key]) {
+                if (!isFinite(Objct[key][keys]) && keys !== 'operator') Objct[key][keys] = 0;   
             }
         }
     });
