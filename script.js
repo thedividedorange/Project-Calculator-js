@@ -158,7 +158,7 @@ const handleEqualsEvt = () => {
         topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
 
         copyObjectToOld(oldState, newState)
-        clearValues(true, false, false, false)
+        clearValues(true)
 
         calcState.current = undefined
 
@@ -174,11 +174,14 @@ const handleEqualsEvt = () => {
         clearValues(true, false, false, true) 
     } else return
 
-    handleError()
     updateDisplay(topDisplay, bottomDisplay)
+    handleError()
 }
 
-const handleCurrentEntryEvt = () => {
+// function to handle current entry button, works similar to windows 10 calculator, depending on the state of the calculator
+// if state is previous or next, value is set to 0, if undefined or empty, it is calls the clearValues()
+
+const handleCurrentEntryButton = () => {
 
     const {newState} = calcState
     const currentState = getCurrentState()
@@ -190,11 +193,14 @@ const handleCurrentEntryEvt = () => {
         newState.next = 0
         updateDisplay(false, '0')
     } else {
-        clearValues(true, false, true, false)
+        clearValues(true, false, true)
     }
 }
 
-const handleCalcDeleteEvt = () => {
+// function to handle calculator delete (backspace) button, includes error handling if user backspaces all the numbers
+// if no number is left it throws NaN, so it is replaced by 0 using handleError()
+
+const handleCalcDeleteButton = () => {
 
     const {newState} = calcState
     const currentState = getCurrentState()
@@ -206,27 +212,56 @@ const handleCalcDeleteEvt = () => {
         } else if (value === `next`){
             temp = newState.next.toString()
         } else return
-  
+
         temp = parseFloat(temp.slice(0, temp.length-1))
         return value === `previous` ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
     })
-
+    
     if(result[0] !== undefined) updateDisplay(false, result)
     handleError()
 }
 
+// function to handle some errors during operations like NaN, Infinity, this function is called in some other
+// functions based on the outputs
+
 const handleError = () => {
 
     const {newState} = calcState
+    isNaNOrInfinity()
+    // isNaN(newState.previous) ? newState.previous = 0 : newState.previous
+    // isNaN(newState.next) ? newState.next = 0 : newState.next
+    const displayError = bottomDisplay.textContent
 
-    isNaN(newState.previous) ? newState.previous = 0 : newState.previous
-    isNaN(newState.next) ? newState.next = 0 : newState.next
-
-    if (bottomDisplay.textContent === "NaN") updateDisplay(false, '0')
-    if (bottomDisplay.textContent === "Infinity" && newState.operator === '÷') updateDisplay(false, 'Cannot Divide by 0')
+    switch (displayError) {
+        case "Infinity":
+        case "-Infinity":
+            updateDisplay(false, 'Cannot Divide by 0');
+            break;
+        case "NaN":
+            updateDisplay(false, '0');
+            break;
+        default:
+            return;
+    }
 }
 
-const handleResetEvt = () => clearValues(true, true, true, true)
+// function to loop through Object and check for NaN or Infinity replacing it with 0
+
+const isNaNOrInfinity = () => {
+    Object.keys(calcState).forEach((key) => {
+        if (key !== 'current') {
+            for (let keys in calcState[key]) {
+                if (!isFinite(calcState[key][keys]) && keys !== 'operator') calcState[key][keys] = 0;   
+            }
+        }
+    });
+}
+
+// function to handle reset button click, once clicked it resets the calculator values
+
+const handleResetButton = () => clearValues(true, true, true, true)
+
+// function to clear old object, new object, display screen, current state
 
 const clearValues = (objNew=false, objOld=false, display=false, currentState=false) => {
 
@@ -234,16 +269,19 @@ const clearValues = (objNew=false, objOld=false, display=false, currentState=fal
     objOld === true ? clearObj(calcState.oldState, currentState) : calcState.oldState
 
     if(display === true) updateDisplay(' ', '0')
-    
 }
+
 // function to clear new object and/or current state
+
 const clearObj = (objct, currentState) => {
     for (let i in objct){
         objct[i] = ''
     }
     if(currentState) calcState.current = ''
 }
+
 // function to copy new object values to old object for use later on
+
 const copyObjectToOld = (oldObjct,newObjct) => {
     for(oldkeys in oldObjct){
         for(newkeys in newObjct){
@@ -251,7 +289,9 @@ const copyObjectToOld = (oldObjct,newObjct) => {
         }
     }
 }
+
 //
+
 const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
     if (topDisplayValue){
         // console.log(topDisplayValue)
@@ -273,7 +313,7 @@ const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
 
 // function to handle the decimal button clicks, it gets the current state of the Calculator,
 // it then checks if the values have a decimal or got using the checkDecimalPoint(), if false it add a decimal point
-// and then updates the display values
+// and then updates the display values 
 
 const handleDecimalButton = () => {
     
@@ -346,9 +386,9 @@ const checkFloatLength = (element) => {
 // All event Listeners below
 
 decimal.addEventListener("click", handleDecimalButton)
-deleteButton.addEventListener("click", handleCalcDeleteEvt)
-currentEntry.addEventListener("click", handleCurrentEntryEvt)
-resetCalculator.addEventListener("click", handleResetEvt)
+deleteButton.addEventListener("click", handleCalcDeleteButton)
+currentEntry.addEventListener("click", handleCurrentEntryButton)
+resetCalculator.addEventListener("click", handleResetButton)
 equals.addEventListener("click", handleEqualsEvt)
 percent.addEventListener("click", handlePercentEvt)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
