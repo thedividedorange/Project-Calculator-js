@@ -146,29 +146,31 @@ function handlePercentEvt(){
 const handleEqualsButton = () => {
 
     const {oldState, newState} = calcState
+    isDecimalEnd()
     // Initialise topDisplay & BottomDisplay Variables to false
     let topDisplay = false
     let bottomDisplay = false
-    isDecimalEnd() // Calls function to check if current state value is ending with a decimal before working with equals button
 
-    if (newState.previous !== '' && newState.next !== ''){
-        bottomDisplay = operate(newState.previous, newState.next, newState.operator)
-        topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
+    if (newState.previous !== '') {
+        if (newState.next !== '') {
+            bottomDisplay = operate(newState.previous, newState.next, newState.operator);
+            topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`;
 
-        copyObjectToOld(oldState, newState)
-        clearValues(true)
-        updateCurrentState(undefined)
-    } else if (newState.previous !== '' && newState.next === ''){
-        if (newState.previous === oldState.result){
-            topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`
-            bottomDisplay = `${oldState.result}`
+            copyObjectToOld(oldState, newState);
+            clearValues(true);
+            updateCurrentState(undefined);
         } else {
-            topDisplay = ' '
+            if (newState.previous === oldState.result) {
+                topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`;
+                bottomDisplay = `${oldState.result}`;
+            } else {
+                topDisplay = ' ';
+            }
+
+            clearValues(true, false, false, true);
         }
-
-        clearValues(true, false, false, true) 
     } else return
-
+    
     updateDisplay(topDisplay, bottomDisplay)
     handleError()
 }
