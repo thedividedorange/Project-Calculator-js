@@ -215,7 +215,7 @@ const handleCalcDeleteButton = () => {
         } else return
 
         temp = parseFloat(temp.slice(0, temp.length-1))
-        return value === `previous` ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
+        return value === `previous` ? newState.previous = temp : newState.next = temp
     })
     
     if(result[0] !== undefined) updateDisplay(false, result)
