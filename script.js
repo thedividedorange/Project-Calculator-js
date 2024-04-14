@@ -67,11 +67,9 @@ function handleOperationsClickEvt(){
     const {oldState, newState} = calcState
     isDecimalEnd()
 
-    if (newState.previous === ''){
-        // newState.previous = oldState.result = parseFloat(bottomDisplay.textContent)    
+    if (newState.previous === '' && oldState.result !== ''){
         newState.previous = oldState.result
         newState.operator = this.value
-
         topDisplay.textContent = newState.previous + newState.operator
 
     } else if (newState.previous !== '' && newState.next !== ''){
@@ -86,7 +84,7 @@ function handleOperationsClickEvt(){
         bottomDisplay.textContent = '0'
         newState.operator = this.value
 
-    } else {
+    } else if(newState.previous !== '' && newState.next === ''){
         newState.operator = this.value
         topDisplay.textContent = newState.previous + newState.operator
         updateCurrentState(undefined)
@@ -142,12 +140,16 @@ function handlePercentEvt(){
     }
 }
 
-const handleEqualsEvt = () => {
+// function to handle how the equals button operates based on different conditions on the current state of the calculator.
+// use `calcState` in console to understand.
+
+const handleEqualsButton = () => {
 
     const {oldState, newState} = calcState
+    // Initialise topDisplay & BottomDisplay Variables to false
     let topDisplay = false
     let bottomDisplay = false
-    isDecimalEnd()
+    isDecimalEnd() // Calls function to check if current state value is ending with a decimal before working with equals button
 
     if (newState.previous !== '' && newState.next !== ''){
         bottomDisplay = operate(newState.previous, newState.next, newState.operator)
@@ -155,11 +157,8 @@ const handleEqualsEvt = () => {
 
         copyObjectToOld(oldState, newState)
         clearValues(true)
-
         updateCurrentState(undefined)
-
     } else if (newState.previous !== '' && newState.next === ''){
-
         if (newState.previous === oldState.result){
             topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`
             bottomDisplay = `${oldState.result}`
@@ -387,7 +386,7 @@ decimal.addEventListener("click", handleDecimalButton)
 deleteButton.addEventListener("click", handleCalcDeleteButton)
 currentEntry.addEventListener("click", handleCurrentEntryButton)
 resetCalculator.addEventListener("click", handleResetButton)
-equals.addEventListener("click", handleEqualsEvt)
+equals.addEventListener("click", handleEqualsButton)
 percent.addEventListener("click", handlePercentEvt)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
 buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
