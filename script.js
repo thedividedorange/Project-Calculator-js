@@ -62,8 +62,6 @@ function operate(previous,next, operator){
     return checkFloatLength(newState.result)
 }
 
-
-
 function handleOperationsClickEvt(){
 
     const {oldState, newState} = calcState
@@ -91,11 +89,9 @@ function handleOperationsClickEvt(){
     } else {
         newState.operator = this.value
         topDisplay.textContent = newState.previous + newState.operator
-        calcState.current = undefined
+        updateCurrentState(undefined)
     }
 }
-
-
 
 function handleNumbersClickEvt(){
 
@@ -108,16 +104,15 @@ function handleNumbersClickEvt(){
 
         bottomDisplay.textContent = newState.previous
 
-        calcState.current = 'previous'
-
+        updateCurrentState('previous')
     } else {
         newState.next += this.value
         newState.next.charAt(0) === '0' && newState.previous.length >= 2 ? 
         newState.next = parseFloat([...newState.next].splice(1).join('')) : newState.next = parseFloat(newState.next)
 
         bottomDisplay.textContent = newState.next
-        
-        calcState.current = 'next'
+
+        updateCurrentState('next')
     }
 }
 
@@ -140,7 +135,7 @@ function handlePercentEvt(){
     
         copyObjectToOld(oldState, newState)
         clearValues(true, false, false, false)
-        calcState.current = undefined
+        updateCurrentState(undefined)
 
     } else if (calcState.current === undefined){
         newState.operator = swap
@@ -161,7 +156,7 @@ const handleEqualsEvt = () => {
         copyObjectToOld(oldState, newState)
         clearValues(true)
 
-        calcState.current = undefined
+        updateCurrentState(undefined)
 
     } else if (newState.previous !== '' && newState.next === ''){
 
@@ -227,10 +222,7 @@ const handleCalcDeleteButton = () => {
 
 const handleError = () => {
 
-    // const {newState} = calcState
     isNaNOrInfinity(calcState)
-    // isNaN(newState.previous) ? newState.previous = 0 : newState.previous
-    // isNaN(newState.next) ? newState.next = 0 : newState.next
     const displayError = bottomDisplay.textContent
 
     switch (displayError) {
@@ -377,6 +369,10 @@ const isDecimalEnd = () => {
 // function to get the currentState of the calculator
 
 const getCurrentState = () => calcState.current
+
+// function to get the update the currentState of the calculator
+
+const updateCurrentState = (state) => calcState.current = state
 
 // function to check the lenght of floating points and reduce it to a maximum of 4 decimals
 
