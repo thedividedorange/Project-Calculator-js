@@ -223,7 +223,7 @@ const handleCalcDeleteButton = () => {
 
 const handleError = () => {
 
-    isNaNOrInfinity(calcState)
+    fixNaNOrInfinity(calcState)
     const displayError = bottomDisplay.textContent
 
     switch (displayError) {
@@ -242,11 +242,11 @@ const handleError = () => {
 // function to loop through Object and check for NaN or Infinity replacing it with 0
 // we do not want to include current key and operator
 
-const isNaNOrInfinity = (Objct) => {
-    Object.keys(Objct).forEach((key) => {
+const fixNaNOrInfinity = (object) => {
+    Object.keys(object).forEach((key) => {
         if (key !== 'current') { 
-            for (let subKey in Objct[key]) {
-                if (!isFinite(Objct[key][subKey]) && subKey !== 'operator') Objct[key][subKey] = 0;   
+            for (let subKey in object[key]) {
+                if (!isFinite(object[key][subKey]) && subKey !== 'operator') object[key][subKey] = 0;   
             }
         }
     });
