@@ -236,14 +236,14 @@ const clearValues = (objNew=false, objOld=false, display=false, currentState=fal
     if(display === true) updateDisplay(' ', '0')
     
 }
-
+// function to clear new object and/or current state
 const clearObj = (objct, currentState) => {
     for (let i in objct){
         objct[i] = ''
     }
     if(currentState) calcState.current = ''
 }
-
+// function to copy new object values to old object for use later on
 const copyObjectToOld = (oldObjct,newObjct) => {
     for(oldkeys in oldObjct){
         for(newkeys in newObjct){
@@ -251,7 +251,7 @@ const copyObjectToOld = (oldObjct,newObjct) => {
         }
     }
 }
-
+//
 const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
     if (topDisplayValue){
         // console.log(topDisplayValue)
@@ -271,13 +271,17 @@ const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
     }
 }
 
+// function to handle the decimal button clicks, it gets the current state of the Calculator,
+// it then checks if the values have a decimal or got using the checkDecimalPoint(), if false it add a decimal point
+// and then updates the display values
+
 const handleDecimalButton = () => {
     
     const {newState} = calcState
     const currentState = [getCurrentState()]
 
     currentState.forEach((state) => {
-        if(typeof state === 'undefined' || state === ''){
+        if(state === undefined || state === ''){
             return
         } else {
             const isDecimal = checkDecimalPoint(state)
@@ -292,6 +296,8 @@ const handleDecimalButton = () => {
     })
 }
 
+// function to check if the number has a decimal (.) or not, if true it will return true else false
+
 const checkDecimalPoint = (currentState) => {
 
     const {newState} = calcState
@@ -302,7 +308,10 @@ const checkDecimalPoint = (currentState) => {
         return true
     } else return false
 }
-    
+
+// function to check if the number is ending with a decimal(.) and no values after the decimal, 
+// if true and a user tries to operate using an operator, it will automatically add 0 to the end of the decimal (.)    
+
 const isDecimalEnd = () => {
 
     const {newState} = calcState
@@ -323,12 +332,18 @@ const isDecimalEnd = () => {
     if(result[0] !== undefined) updateDisplay(false, result)
 }
 
+// function to get the currentState of the calculator
+
 const getCurrentState = () => calcState.current
+
+// function to check the lenght of floating points and reduce it to a maximum of 4 decimals
 
 const checkFloatLength = (element) => {
     const [array, decimalPoint] = element.toString().split(".")
     return decimalPoint !== undefined ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
 }
+
+// All event Listeners below
 
 decimal.addEventListener("click", handleDecimalButton)
 deleteButton.addEventListener("click", handleCalcDeleteEvt)
