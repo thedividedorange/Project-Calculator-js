@@ -212,7 +212,11 @@ const handleCalcDeleteButton = () => {
 const handleError = () => {
 
     fixNaNOrInfinity(calcState)
-    const displayError = bottomDisplay.textContent
+    fixDisplayError(bottomDisplay)
+}
+
+const fixDisplayError = (display) => {
+    const displayError = display.textContent
 
     switch (displayError) {
         case "Infinity":
