@@ -22,16 +22,8 @@ const operations = {
 }
 
 const calcState = {
-    oldState: { previous: '',
-            operator: '',
-            next: '',
-            result: '',
-    },
-    newState: { previous: '',
-            operator: '',
-            next: '',
-            result: '',
-    },
+    oldState: { previous: '', operator: '', next: '', result: ''},
+    newState: { previous: '', operator: '', next: '', result: ''},
     current: ''
 }
 
@@ -116,28 +108,32 @@ function handleNumbersClickEvt(){
 
 function handlePercentEvt(){
 
-    const {oldState, newState} = calcState
+    const {oldState, newState} = calcState, currentState = getCurrentState();
 
+    let topDisplay = false, bottomDisplay = false
     let swap = newState.operator
     newState.operator = this.value
 
-    if (calcState.current === 'previous'){
-        bottomDisplay.textContent = newState.previous = 0
+    if (currentState === 'previous'){
+        bottomDisplay = newState.previous = 0
         newState.operator = swap
-        topDisplay.textContent = ''
+        topDisplay = ''
 
-    } else if (calcState.current === 'next'){
-        bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
+    } else if (currentState === 'next'){
+        bottomDisplay = operate(newState.previous, newState.next, newState.operator)
         newState.operator = swap
-        topDisplay.textContent = `${newState.previous} ${newState.operator} ${newState.next} =`
+        topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
+ 
     
         copyObjectToOld(oldState, newState)
-        clearValues(true, false, false, false)
+        clearValues(true)
         updateCurrentState(undefined)
 
-    } else if (calcState.current === undefined){
+    } else if (currentState === undefined){
         newState.operator = swap
     }
+
+    updateDisplay(topDisplay, bottomDisplay.toString())
 }
 
 const handleEqualsButton = () => {
@@ -145,8 +141,7 @@ const handleEqualsButton = () => {
     const {oldState, newState} = calcState
     isDecimalEnd()
     
-    let topDisplay = false
-    let bottomDisplay = false
+    let topDisplay = false, bottomDisplay = false
 
     if (newState.previous !== '') {
         if (newState.next !== '') {
@@ -167,15 +162,14 @@ const handleEqualsButton = () => {
             clearValues(true, false, false, true);
         }
     } else return
-    
+
     updateDisplay(topDisplay, bottomDisplay)
     handleError()
 }
 
 const handleCurrentEntryButton = () => {
 
-    const {newState} = calcState
-    const currentState = getCurrentState()
+    const {newState} = calcState, currentState = getCurrentState()
 
     if(currentState === 'previous'){
         newState.previous = 0
@@ -190,8 +184,7 @@ const handleCurrentEntryButton = () => {
 
 const handleCalcDeleteButton = () => {
 
-    const {newState} = calcState
-    const currentState = getCurrentState()
+    const {newState} = calcState, currentState = getCurrentState()
     let temp 
 
     const result = [currentState].map((value) => {
@@ -210,12 +203,12 @@ const handleCalcDeleteButton = () => {
 }
 
 const handleError = () => {
-
     fixNaNOrInfinity(calcState)
     fixDisplayError(bottomDisplay)
 }
 
 const fixDisplayError = (display) => {
+
     const displayError = display.textContent
 
     switch (displayError) {
@@ -267,6 +260,7 @@ const copyObjectToOld = (oldObjct,newObjct) => {
 }
 
 const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
+
     if (topDisplayValue){
         // console.log(topDisplayValue)
         // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
@@ -287,8 +281,7 @@ const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
 
 const handleDecimalButton = () => {
     
-    const {newState} = calcState
-    const currentState = [getCurrentState()]
+    const {newState} = calcState, currentState = [getCurrentState()]
 
     currentState.forEach((state) => {
         if(state === undefined || state === ''){
@@ -319,8 +312,7 @@ const checkDecimalPoint = (currentState) => {
 
 const isDecimalEnd = () => {
 
-    const {newState} = calcState
-    const currentState = getCurrentState()
+    const {newState} = calcState, currentState = getCurrentState()
     let temp
 
     const result = [currentState].map((value) => {
