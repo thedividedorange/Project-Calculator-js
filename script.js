@@ -109,9 +109,8 @@ function handleNumbersClickEvt(){
 function handlePercentEvt(){
 
     const {oldState, newState} = calcState, currentState = getCurrentState();
+    let topDisplay = false, bottomDisplay = false, swap = newState.operator
 
-    let topDisplay = false, bottomDisplay = false
-    let swap = newState.operator
     newState.operator = this.value
 
     if (currentState === 'previous'){
@@ -139,9 +138,9 @@ function handlePercentEvt(){
 const handleEqualsButton = () => {
 
     const {oldState, newState} = calcState
-    isDecimalEnd()
-    
     let topDisplay = false, bottomDisplay = false
+
+    isDecimalEnd()
 
     if (newState.previous !== '') {
         if (newState.next !== '') {
