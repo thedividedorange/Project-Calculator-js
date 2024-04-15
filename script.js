@@ -140,9 +140,6 @@ function handlePercentEvt(){
     }
 }
 
-// function to handle how the equals button operates based on different conditions on the current state of the calculator.
-// use `calcState` in console to understand.
-
 const handleEqualsButton = () => {
 
     const {oldState, newState} = calcState
@@ -175,9 +172,6 @@ const handleEqualsButton = () => {
     handleError()
 }
 
-// function to handle current entry button, works similar to windows 10 calculator, depending on the state of the calculator
-// if state is previous or next, value is set to 0, if undefined or empty, it is calls the clearValues()
-
 const handleCurrentEntryButton = () => {
 
     const {newState} = calcState
@@ -193,9 +187,6 @@ const handleCurrentEntryButton = () => {
         clearValues(true, false, true)
     }
 }
-
-// function to handle calculator delete (backspace) button, includes error handling if user backspaces all the numbers
-// if no number is left it throws NaN, so it is replaced by 0 using handleError()
 
 const handleCalcDeleteButton = () => {
 
@@ -218,9 +209,6 @@ const handleCalcDeleteButton = () => {
     handleError()
 }
 
-// function to handle some errors during operations like NaN, Infinity, this function is called in some other
-// functions based on the outputs
-
 const handleError = () => {
 
     fixNaNOrInfinity(calcState)
@@ -239,9 +227,6 @@ const handleError = () => {
     }
 }
 
-// function to loop through Object and check for NaN or Infinity replacing it with 0
-// we do not want to include current key and operator
-
 const fixNaNOrInfinity = (object) => {
     Object.keys(object).forEach((key) => {
         if (key !== 'current') { 
@@ -252,11 +237,7 @@ const fixNaNOrInfinity = (object) => {
     });
 }
 
-// function to handle reset button click, once clicked it resets the calculator values
-
 const handleResetButton = () => clearValues(true, true, true, true)
-
-// function to clear old object, new object, display screen, current state
 
 const clearValues = (objNew=false, objOld=false, display=false, currentState=false) => {
 
@@ -266,16 +247,12 @@ const clearValues = (objNew=false, objOld=false, display=false, currentState=fal
     if(display === true) updateDisplay(' ', '0')
 }
 
-// function to clear new object and/or current state
-
 const clearObj = (objct, currentState) => {
     for (let i in objct){
         objct[i] = ''
     }
     if(currentState) calcState.current = ''
 }
-
-// function to copy new object values to old object for use later on
 
 const copyObjectToOld = (oldObjct,newObjct) => {
     for(oldkeys in oldObjct){
@@ -284,8 +261,6 @@ const copyObjectToOld = (oldObjct,newObjct) => {
         }
     }
 }
-
-//
 
 const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
     if (topDisplayValue){
@@ -305,10 +280,6 @@ const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
         } else bottomDisplay.textContent = bottomDisplayValue
     }
 }
-
-// function to handle the decimal button clicks, it gets the current state of the Calculator,
-// it then checks if the values have a decimal or got using the checkDecimalPoint(), if false it add a decimal point
-// and then updates the display values 
 
 const handleDecimalButton = () => {
     
@@ -331,8 +302,6 @@ const handleDecimalButton = () => {
     })
 }
 
-// function to check if the number has a decimal (.) or not, if true it will return true else false
-
 const checkDecimalPoint = (currentState) => {
 
     const {newState} = calcState
@@ -342,10 +311,7 @@ const checkDecimalPoint = (currentState) => {
     } else if (currentState === 'next' && newState.next.toString().includes(".")){
         return true
     } else return false
-}
-
-// function to check if the number is ending with a decimal(.) and no values after the decimal, 
-// if true and a user tries to operate using an operator, it will automatically add 0 to the end of the decimal (.)    
+}   
 
 const isDecimalEnd = () => {
 
@@ -367,22 +333,14 @@ const isDecimalEnd = () => {
     if(result[0] !== undefined) updateDisplay(false, result)
 }
 
-// function to get the currentState of the calculator
-
 const getCurrentState = () => calcState.current
 
-// function to get the update the currentState of the calculator
-
 const updateCurrentState = (state) => calcState.current = state
-
-// function to check the lenght of floating points and reduce it to a maximum of 4 decimals
 
 const checkFloatLength = (element) => {
     const [array, decimalPoint] = element.toString().split(".")
     return decimalPoint !== undefined ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
 }
-
-// All event Listeners below
 
 decimal.addEventListener("click", handleDecimalButton)
 deleteButton.addEventListener("click", handleCalcDeleteButton)
@@ -392,5 +350,3 @@ equals.addEventListener("click", handleEqualsButton)
 percent.addEventListener("click", handlePercentEvt)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
 buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
-
-// handleCurrentEntryEvt, equals, update display
