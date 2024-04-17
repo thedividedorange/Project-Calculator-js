@@ -112,32 +112,31 @@ function handleNumbersClickEvt(){
     }
 }
 
-function handlePercentEvt(){
+function handlePercentButton(){
 
     const {oldState, newState} = calcState, currentState = getCurrentState();
     let topDisplay = false, bottomDisplay = false, swap = newState.operator
 
     newState.operator = this.value
 
-    if (currentState === 'previous'){
-        bottomDisplay = newState.previous = 0
-        newState.operator = swap
-        topDisplay = ''
+    if (currentState){
+        if (currentState === 'previous'){
+            newState[currentState] = 0
+            bottomDisplay = newState[currentState].toString()
+            newState.operator = swap
+            topDisplay = ' '
+        } else {
+            bottomDisplay = operate(newState.previous, newState[currentState], newState.operator)
+            newState.operator = swap
+            topDisplay = `${newState.previous} ${newState.operator} ${newState[currentState]} =`
 
-    } else if (currentState === 'next'){
-        bottomDisplay = operate(newState.previous, newState.next, newState.operator)
-        newState.operator = swap
-        topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
- 
-        copyObjectToOld(oldState, newState)
-        clearValues(true)
-        updateCurrentState(undefined)
+            copyObjectToOld(oldState, newState)
+            clearValues(true)
+            updateCurrentState(undefined)
+        }
+    } else newState.operator = swap
 
-    } else if (currentState === undefined){
-        newState.operator = swap
-    }
-
-    updateDisplay(topDisplay, bottomDisplay.toString())
+    updateDisplay(topDisplay, bottomDisplay)
 }
 
 const handleEqualsButton = () => {
@@ -181,15 +180,6 @@ const handleCurrentEntryButton = () => {
     } else if(currentState === ''){
         clearValues(true, false, true)
     }
-    // if(currentState === 'previous'){
-    //     newState.previous = 0
-    //     updateDisplay(false, '0')
-    // } else if(currentState === 'next'){
-    //     newState.next = 0
-    //     updateDisplay(false, '0')
-    // } else {
-    //     clearValues(true, false, true)
-    // }
 }
 
 const handleCalcDeleteButton = () => {
@@ -353,7 +343,7 @@ deleteButton.addEventListener("click", handleCalcDeleteButton)
 currentEntry.addEventListener("click", handleCurrentEntryButton)
 resetCalculator.addEventListener("click", handleResetButton)
 equals.addEventListener("click", handleEqualsButton)
-percent.addEventListener("click", handlePercentEvt)
+percent.addEventListener("click", handlePercentButton)
 square.addEventListener("click", handleSquareButton)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
 buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
