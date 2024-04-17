@@ -327,21 +327,32 @@ function handleSquareButton(){
     
     newState.operator = this.value
 
-    if(currentState){
-        if(currentState === 'previous'){
-            bottomDisplay = operate(newState.previous, false, newState.operator)
-            newState.previous = newState.result
-           
-            newState.operator = ''
-        } else {
-            bottomDisplay = operate(newState.next, false, newState.operator)
-            newState.next = newState.result
-            newState.operator = swap
-        }
-        newState.result = ''
-        newState.operator = currentState === 'previous' ? '' : swap
+        if(currentState){
+            bottomDisplay = operate(newState[currentState], false, newState.operator)
+            newState[currentState] = newState.result
 
-    } else return
+            newState.result = ''
+            newState.operator = currentState === 'previous' ? '' : swap
+        } else return 
+
+
+    // } else return
+
+    // if(currentState){
+    //     if(currentState === 'previous'){
+    //         bottomDisplay = operate(newState[currentState], false, newState.operator)
+    //         newState[currentState] = newState.result
+           
+    //         newState.operator = ''
+    //     } else {
+    //         bottomDisplay = operate(newState[currentState], false, newState.operator)
+    //         newState[currentState] = newState.result
+    //         newState.operator = swap
+    //     }
+    //     newState.result = ''
+    //     newState.operator = currentState === 'previous' ? '' : swap
+
+    // } else return
 
     updateDisplay(topDisplay, bottomDisplay)
 }
