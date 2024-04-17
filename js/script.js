@@ -189,20 +189,16 @@ const handleCurrentEntryButton = () => {
 const handleCalcDeleteButton = () => {
 
     const {newState} = calcState, currentState = getCurrentState()
-    let temp 
+    let result
 
-    const result = [currentState].map((value) => {
-        if(value === `previous`){
-            temp = newState.previous.toString()
-        } else if (value === `next`){
-            temp = newState.next.toString()
-        } else return
+    if(currentState){
+        let temp = newState[currentState].toString()
 
         temp = parseFloat(temp.slice(0, temp.length-1))
-        return value === `previous` ? newState.previous = temp : newState.next = temp
-    })
-    
-    if(result[0] !== undefined) updateDisplay(false, result)
+        result = newState[currentState] = temp 
+    } else return
+
+    updateDisplay(false, result.toString())
     handleError()
 }
 
@@ -334,25 +330,6 @@ function handleSquareButton(){
             newState.result = ''
             newState.operator = currentState === 'previous' ? '' : swap
         } else return 
-
-
-    // } else return
-
-    // if(currentState){
-    //     if(currentState === 'previous'){
-    //         bottomDisplay = operate(newState[currentState], false, newState.operator)
-    //         newState[currentState] = newState.result
-           
-    //         newState.operator = ''
-    //     } else {
-    //         bottomDisplay = operate(newState[currentState], false, newState.operator)
-    //         newState[currentState] = newState.result
-    //         newState.operator = swap
-    //     }
-    //     newState.result = ''
-    //     newState.operator = currentState === 'previous' ? '' : swap
-
-    // } else return
 
     updateDisplay(topDisplay, bottomDisplay)
 }
