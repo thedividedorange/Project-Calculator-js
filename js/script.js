@@ -92,24 +92,18 @@ function handleOperationsClickEvt(){
 function handleNumbersClickEvt(){
 
     const {newState} = calcState
-    
-    if (newState.operator === ''){
-        newState.previous += this.value
-        newState.previous.charAt(0) === '0' && newState.previous.length >= 2  ? 
-        newState.previous = parseFloat([...newState.previous].splice(1).join('')) : newState.previous = parseFloat(newState.previous)
+    const currentState = newState.operator === '' ? 'previous' : 'next'
 
-        bottomDisplay.textContent = newState.previous
-
-        updateCurrentState('previous')
+    newState[currentState] += this.value
+        
+    if (newState[currentState].charAt(0) === '0') {
+        newState[currentState] = newState[currentState].length >= 2 ? parseFloat(newState[currentState].substring(1)) : parseFloat(newState[currentState])
     } else {
-        newState.next += this.value
-        newState.next.charAt(0) === '0' && newState.previous.length >= 2 ? 
-        newState.next = parseFloat([...newState.next].splice(1).join('')) : newState.next = parseFloat(newState.next)
-
-        bottomDisplay.textContent = newState.next
-
-        updateCurrentState('next')
+        newState[currentState] = parseFloat(newState[currentState]);
     }
+
+    updateCurrentState(currentState)
+    bottomDisplay.textContent = newState[currentState]
 }
 
 function handlePercentButton(){
