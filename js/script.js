@@ -33,7 +33,7 @@ function operate(previous,next, operator){
 
     const {newState} = calcState
 
-    switch(operator){
+    switch (operator){
         case "+":
             newState.result = operations.add(previous,next)
             break;
@@ -149,7 +149,7 @@ const handleEqualsButton = () => {
             clearValues(true);
             updateCurrentState(undefined);
         } else {
-            if (newState.previous === oldState.result) {
+            if(newState.previous === oldState.result) {
                 topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`;
                 bottomDisplay = `${oldState.result}`;
             } else {
@@ -168,10 +168,10 @@ const handleCurrentEntryButton = () => {
 
     const {newState} = calcState, currentState = getCurrentState()
 
-    if(currentState){
+    if (currentState){
         newState[currentState] = 0
         updateDisplay(false,  '0')
-    } else if(currentState === ''){
+    } else if (currentState === ''){
         clearValues(true, false, true)
     }
 }
@@ -181,7 +181,7 @@ const handleCalcDeleteButton = () => {
     const {newState} = calcState, currentState = getCurrentState()
     let result
 
-    if(currentState){
+    if (currentState){
         let temp = newState[currentState].toString()
         temp = parseFloat(temp.slice(0, temp.length-1))
         result = newState[currentState] = temp 
@@ -230,19 +230,19 @@ const clearValues = (objNew=false, objOld=false, display=false, currentState=fal
     objNew === true ? clearObj(calcState.newState, currentState) : calcState.newState
     objOld === true ? clearObj(calcState.oldState, currentState) : calcState.oldState
 
-    if(display === true) updateDisplay(' ', '0')
+    if (display === true) updateDisplay(' ', '0')
 }
 
 const clearObj = (objct, currentState) => {
     for (let i in objct){
         objct[i] = ''
     }
-    if(currentState) calcState.current = ''
+    if (currentState) calcState.current = ''
 }
 
 const copyObjectToOld = (oldObjct,newObjct) => {
-    for(oldkeys in oldObjct){
-        for(newkeys in newObjct){
+    for (oldkeys in oldObjct){
+        for (newkeys in newObjct){
             oldkeys === newkeys ? oldObjct[oldkeys] = newObjct[newkeys] : oldObjct[oldkeys]
         }
     }
@@ -257,7 +257,7 @@ const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
     }
     if (bottomDisplayValue) {
         if (operator){
-            switch(operator){
+            switch (operator){
                 case "+":
                     bottomDisplay.textContent += bottomDisplayValue
                     break;
@@ -272,7 +272,7 @@ const handleDecimalButton = () => {
     
     const {newState} = calcState, currentState = getCurrentState()
 
-    if(currentState){
+    if (currentState){
         const isDecimal = checkDecimalPoint(currentState)
         if (!isDecimal) {
             newState[currentState] = newState[currentState].toString().concat(".");
@@ -294,7 +294,7 @@ const isDecimalEnd = () => {
     const {newState} = calcState, currentState = getCurrentState()
     let result
 
-    if(currentState){
+    if (currentState){
         if (newState[currentState]){
             let temp = newState[currentState].toString()
             temp = temp.charAt(temp.length-1) === '.' ? temp.concat('0') : temp
@@ -309,10 +309,9 @@ function handleSquareButton(){
     
     const {newState} = calcState, currentState = getCurrentState()
     let topDisplay = false, bottomDisplay = false, swap = newState.operator
-    
-    newState.operator = this.value
 
-        if(currentState){
+        if (currentState){
+            newState.operator = this.value
             bottomDisplay = operate(newState[currentState], false, newState.operator)
             newState[currentState] = newState.result
 
@@ -324,7 +323,6 @@ function handleSquareButton(){
 }
 
 const getCurrentState = () => calcState.current
-
 const updateCurrentState = (state) => calcState.current = state
 
 const checkFloatLength = (element) => {
