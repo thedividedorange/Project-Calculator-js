@@ -89,7 +89,7 @@ function handleOperationsClickEvt(){
     }
 }
 
-function handleNumbersClickEvt(){
+function handleNumbersClickButton(){
 
     const {newState} = calcState
     const currentState = newState.operator === '' ? 'previous' : 'next'
@@ -340,4 +340,4 @@ equals.addEventListener("click", handleEqualsButton)
 percent.addEventListener("click", handlePercentButton)
 square.addEventListener("click", handleSquareButton)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
-buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
+buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickButton))
