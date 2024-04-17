@@ -175,15 +175,21 @@ const handleCurrentEntryButton = () => {
 
     const {newState} = calcState, currentState = getCurrentState()
 
-    if(currentState === 'previous'){
-        newState.previous = 0
-        updateDisplay(false, '0')
-    } else if(currentState === 'next'){
-        newState.next = 0
-        updateDisplay(false, '0')
-    } else {
+    if(currentState){
+        newState[currentState] = 0
+        updateDisplay(false,  '0')
+    } else if(currentState === ''){
         clearValues(true, false, true)
     }
+    // if(currentState === 'previous'){
+    //     newState.previous = 0
+    //     updateDisplay(false, '0')
+    // } else if(currentState === 'next'){
+    //     newState.next = 0
+    //     updateDisplay(false, '0')
+    // } else {
+    //     clearValues(true, false, true)
+    // }
 }
 
 const handleCalcDeleteButton = () => {
@@ -193,7 +199,6 @@ const handleCalcDeleteButton = () => {
 
     if(currentState){
         let temp = newState[currentState].toString()
-
         temp = parseFloat(temp.slice(0, temp.length-1))
         result = newState[currentState] = temp 
     } else return
