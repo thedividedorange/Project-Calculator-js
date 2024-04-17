@@ -104,7 +104,6 @@ function handleNumbersClickButton(){
 
     updateCurrentState(currentState)
     updateDisplay(false, newState[currentState])
-    // bottomDisplay.textContent = newState[currentState]
 }
 
 function handlePercentButton(){
