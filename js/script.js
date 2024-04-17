@@ -6,6 +6,7 @@ const resetCalculator = document.querySelector(".calcButtons button.reset")
 const equals = document.querySelector(".calcButtons button.equals")
 const percent = document.querySelector(".calcButtons button.percent")
 const decimal = document.querySelector(".calcButtons button.decimal")
+const square = document.querySelector(".calcButtons button.square")
 const topDisplay = document.querySelector(".display .top")
 const bottomDisplay = document.querySelector(".display .bottom")
 
@@ -19,6 +20,7 @@ const operations = {
         b = newState.next = a * b / 100        
         return a+b
     },
+    square: (number) => Math.pow(number, 2)
 }
 
 const calcState = {
@@ -46,6 +48,10 @@ function operate(previous,next, operator){
             break;
         case "%":
             newState.result = operations.percent(previous,next)
+            break;
+        case "x²":
+            let num = previous
+            newState.result = operations.square(num)
             break;
         default:
             return
@@ -279,52 +285,65 @@ const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
 
 const handleDecimalButton = () => {
     
-    const {newState} = calcState, currentState = [getCurrentState()]
+    const {newState} = calcState, currentState = getCurrentState()
 
-    currentState.forEach((state) => {
-        if(state === undefined || state === ''){
-            return
-        } else {
-            const isDecimal = checkDecimalPoint(state)
-
-            if(!isDecimal){
-                state === `previous` ? newState.previous = newState.previous.toString().concat(".") :
-                state === `next` ? newState.next = newState.next.toString().concat(".") : newState.next
-
-                updateDisplay(false, '.', '+')
-            }
+    if(currentState){
+        const isDecimal = checkDecimalPoint(currentState)
+        if (!isDecimal) {
+            newState[currentState] = newState[currentState].toString().concat(".");
+            updateDisplay(false, '.', '+');
         }
-    })
+    } else return
 }
 
 const checkDecimalPoint = (currentState) => {
 
     const {newState} = calcState
+    const value = newState[currentState].toString()
 
-    if (currentState === `previous` && newState.previous.toString().includes(".")){
-        return true
-    } else if (currentState === 'next' && newState.next.toString().includes(".")){
-        return true
-    } else return false
+    return value.includes('.')
 }   
 
 const isDecimalEnd = () => {
 
     const {newState} = calcState, currentState = getCurrentState()
-    let temp
+    let result
 
-    const result = [currentState].map((value) => {
-        if (value === 'previous' && newState.previous !== ''){
-            temp = newState.previous.toString()
-        } else if (value === 'next' && newState.next !== '') {
-            temp = newState.next.toString()
-        } else return
+    if(currentState){
+        if (newState[currentState]){
+            let temp = newState[currentState].toString()
+            temp = temp.charAt(temp.length-1) === '.' ? temp.concat('0') : temp
+            result = newState[currentState] = parseFloat(temp)
+        }
+    } else return
 
-        temp.charAt(temp.length-1) === "." ? temp = temp.concat("0") : temp
-        return value === 'previous' ? newState.previous = parseFloat(temp) : newState.next = parseFloat(temp)
-    })
+    updateDisplay(false, result)
+}
 
-    if(result[0] !== undefined) updateDisplay(false, result)
+function handleSquareButton(){
+    
+    const {newState} = calcState, currentState = getCurrentState()
+    let topDisplay = false, bottomDisplay = false, swap = newState.operator
+    
+    newState.operator = this.value
+
+    if(currentState){
+        if(currentState === 'previous'){
+            bottomDisplay = operate(newState.previous, false, newState.operator)
+            newState.previous = newState.result
+           
+            newState.operator = ''
+        } else {
+            bottomDisplay = operate(newState.next, false, newState.operator)
+            newState.next = newState.result
+            newState.operator = swap
+        }
+        newState.result = ''
+        newState.operator = currentState === 'previous' ? '' : swap
+
+    } else return
+
+    updateDisplay(topDisplay, bottomDisplay)
 }
 
 const getCurrentState = () => calcState.current
@@ -342,5 +361,6 @@ currentEntry.addEventListener("click", handleCurrentEntryButton)
 resetCalculator.addEventListener("click", handleResetButton)
 equals.addEventListener("click", handleEqualsButton)
 percent.addEventListener("click", handlePercentEvt)
+square.addEventListener("click", handleSquareButton)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
 buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickEvt))
