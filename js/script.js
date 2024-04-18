@@ -29,10 +29,18 @@ const calcState = {
     current: ''
 }
 
+const strings = {
+    errorMsg: {1: 'Cannot Divide by zero'},
+    errorType: {1: '-Infinity', 2: 'Infinity', 3: 'NaN'},
+    value: {1: ' ', 2: '0', 3: 'previous', 4: 'next', 5: ''}
+}
+
+
+
 function operate(previous,next, operator){
 
     const {newState} = calcState
-
+    
     switch (operator){
         case "+":
             newState.result = operations.add(previous,next)
@@ -63,30 +71,82 @@ function operate(previous,next, operator){
 function handleOperationsClickEvt(){
 
     const {oldState, newState} = calcState
+    let topDisplay = false, bottomDisplay = false
     isDecimalEnd()
 
-    if (newState.previous === '' && oldState.result !== ''){
+    if (newState.previous){
+        if (newState.next){
+            bottomDisplay = operate(newState.previous, newState.next, newState.operator)
+            copyObjectToOld(oldState, newState)
+            newState.operator = this.value
+            topDisplay = newState.result + newState.operator 
+    
+            clearValues(true)
+            newState.previous = parseFloat(bottomDisplay)
+            bottomDisplay = '0'
+            newState.operator = this.value
+        } else {
+            newState.operator = this.value
+            topDisplay = newState.previous + newState.operator
+            updateCurrentState(undefined)
+        }
+    } else if (oldState.result) {
         newState.previous = oldState.result
         newState.operator = this.value
-        topDisplay.textContent = newState.previous + newState.operator
-
-    } else if (newState.previous !== '' && newState.next !== ''){
-        bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
-
-        copyObjectToOld(oldState, newState)
-        newState.operator = this.value
-        topDisplay.textContent = newState.result + newState.operator  
-
-        clearValues(true, false, false, false)
-        newState.previous = parseFloat(bottomDisplay.textContent)
-        bottomDisplay.textContent = '0'
-        newState.operator = this.value
-
-    } else if(newState.previous !== '' && newState.next === ''){
-        newState.operator = this.value
-        topDisplay.textContent = newState.previous + newState.operator
-        updateCurrentState(undefined)
+        topDisplay = newState.previous + newState.operator
     }
+
+    updateDisplay(topDisplay, bottomDisplay)
+    // if(newState.previous){
+    //     if(newState.next){
+    //         bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
+    //         console.log(`1`)
+    //         copyObjectToOld(oldState, newState)
+    //         newState.operator = this.value
+    //         topDisplay.textContent = newState.result + newState.operator  
+    
+    //         clearValues(true, false, false, false)
+    //         newState.previous = parseFloat(bottomDisplay.textContent)
+    //         bottomDisplay.textContent = '0'
+    //         newState.operator = this.value
+    //         console.log(`2`)
+    //     } else {
+    //         newState.operator = this.value
+    //         topDisplay.textContent = newState.previous + newState.operator
+    //         updateCurrentState(undefined)
+    //         console.log(`3`)
+    //     }
+    // } else if(!newState.previous && oldState.result) {
+    //     newState.previous = oldState.result
+    //     newState.operator = this.value
+    //     topDisplay.textContent = newState.previous + newState.operator
+    //     console.log(`4`)
+    // } else {
+    //     console.log(`5`)
+    // }
+
+    // if (newState.previous === '' && oldState.result !== ''){
+    //     newState.previous = oldState.result
+    //     newState.operator = this.value
+    //     topDisplay.textContent = newState.previous + newState.operator
+
+    // } else if (newState.previous !== '' && newState.next !== ''){
+    //     bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
+
+    //     copyObjectToOld(oldState, newState)
+    //     newState.operator = this.value
+    //     topDisplay.textContent = newState.result + newState.operator  
+
+    //     clearValues(true, false, false, false)
+    //     newState.previous = parseFloat(bottomDisplay.textContent)
+    //     bottomDisplay.textContent = '0'
+    //     newState.operator = this.value
+
+    // } else if(newState.previous !== '' && newState.next === ''){
+    //     newState.operator = this.value
+    //     topDisplay.textContent = newState.previous + newState.operator
+    //     updateCurrentState(undefined)
+    // }
 }
 
 function handleNumbersClickButton(){
@@ -167,11 +227,12 @@ const handleEqualsButton = () => {
 const handleCurrentEntryButton = () => {
 
     const {newState} = calcState, currentState = getCurrentState()
+    const {value} = string
 
     if (currentState){
         newState[currentState] = 0
-        updateDisplay(false,  '0')
-    } else if (currentState === ''){
+        updateDisplay(false,  value[2])
+    } else if (currentState === value[5]){
         clearValues(true, false, true)
     }
 }
@@ -199,14 +260,15 @@ const handleError = () => {
 const fixDisplayError = (display) => {
 
     const displayError = display.textContent
-
+    const {errorMsg, errorType, value} = strings
+    
     switch (displayError) {
-        case "Infinity":
-        case "-Infinity":
-            updateDisplay(false, 'Cannot Divide by 0');
+        case errorType[1]:
+        case errorType[2]:
+            updateDisplay(false, errorMsg[1]);
             break;
-        case "NaN":
-            updateDisplay(false, '0');
+        case errorType[3]:
+            updateDisplay(false, value[2]);
             break;
         default:
             return;
@@ -227,17 +289,22 @@ const handleResetButton = () => clearValues(true, true, true, true)
 
 const clearValues = (objNew=false, objOld=false, display=false, currentState=false) => {
 
+    const {value} = strings
+
     objNew === true ? clearObj(calcState.newState, currentState) : calcState.newState
     objOld === true ? clearObj(calcState.oldState, currentState) : calcState.oldState
 
-    if (display === true) updateDisplay(' ', '0')
+    if (display === true) updateDisplay(value[1], value[2])
 }
 
 const clearObj = (objct, currentState) => {
+
+    const {value} = strings
+
     for (let i in objct){
-        objct[i] = ''
+        objct[i] = value[5]
     }
-    if (currentState) calcState.current = ''
+    if (currentState) calcState.current = value[5]
 }
 
 const copyObjectToOld = (oldObjct,newObjct) => {
@@ -308,6 +375,7 @@ const isDecimalEnd = () => {
 function handleSquareButton(){
     
     const {newState} = calcState, currentState = getCurrentState()
+    const {value} = strings
     let topDisplay = false, bottomDisplay = false, swap = newState.operator
 
         if (currentState){
@@ -315,8 +383,8 @@ function handleSquareButton(){
             bottomDisplay = operate(newState[currentState], false, newState.operator)
             newState[currentState] = newState.result
 
-            newState.result = ''
-            newState.operator = currentState === 'previous' ? '' : swap
+            newState.result = value[5]
+            newState.operator = currentState === value[3] ? value[5] : swap
         } else return 
 
     updateDisplay(topDisplay, bottomDisplay)
