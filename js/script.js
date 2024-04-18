@@ -32,30 +32,31 @@ const calcState = {
 const strings = {
     errorMsg: {1: 'Cannot Divide by zero'},
     errorType: {1: '-Infinity', 2: 'Infinity', 3: 'NaN'},
-    value: {1: ' ', 2: '0', 3: 'previous', 4: 'next', 5: '', 6: 'current', 7: 'operator'}
+    value: {1: ' ', 2: '0', 3: 'previous', 4: 'next', 5: '', 6: 'current', 7: 'operator'},
+    sign: {1: '+', 2: '-', 3: '*', 4: '÷', 5: '%', 6: 'x²'}
 }
 
 function operate(previous,next, operator){
 
-    const {newState} = calcState
-    
+    const {newState} = calcState, {sign} = strings
+  
     switch (operator){
-        case "+":
+        case sign[1]:
             newState.result = operations.add(previous,next)
             break;
-        case "-":
+        case sign[2]:
             newState.result = operations.substract(previous,next)
             break;
-        case "*":
+        case sign[3]:
             newState.result = operations.multiply(previous,next)
             break;
-        case "÷":
+        case sign[4]:
             newState.result = operations.divide(previous,next)
             break;
-        case "%":
+        case sign[5]:
             newState.result = operations.percent(previous,next)
             break;
-        case "x²":
+        case sign[6]:
             let num = previous
             newState.result = operations.square(num)
             break;
@@ -111,7 +112,7 @@ function handleNumbersClickButton(){
     }
 
     updateCurrentState(currentState)
-    updateDisplay(false, newState[currentState])
+    updateDisplay(false, newState[currentState].toString())
 }
 
 function handlePercentButton(){
@@ -142,6 +143,24 @@ function handlePercentButton(){
     updateDisplay(topDisplay, bottomDisplay)
 }
 
+function handleSquareButton(){
+    
+    const {newState} = calcState
+    const currentState = getCurrentState(), {value} = strings
+    let topDisplay = false, bottomDisplay = false, swap = newState.operator
+
+        if (currentState){
+            newState.operator = this.value
+            bottomDisplay = operate(newState[currentState], false, newState.operator)
+            newState[currentState] = newState.result
+
+            newState.result = value[5]
+            newState.operator = currentState === value[3] ? value[5] : swap
+        } else return 
+
+    updateDisplay(topDisplay, bottomDisplay)
+}
+
 const handleEqualsButton = () => {
 
     const {oldState, newState} = calcState, {value} = strings
@@ -151,16 +170,16 @@ const handleEqualsButton = () => {
 
     if (newState.previous !== value[5]) {
         if (newState.next !== value[5]) {
-            bottomDisplay = operate(newState.previous, newState.next, newState.operator);
-            topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`;
+            bottomDisplay = operate(newState.previous, newState.next, newState.operator)
+            topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
 
             copyObjectToOld(oldState, newState);
             clearValues(true);
             updateCurrentState(undefined);
         } else {
             if(newState.previous === oldState.result) {
-                topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`;
-                bottomDisplay = `${oldState.result}`;
+                topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`
+                bottomDisplay = `${oldState.result}`
             } else {
                 topDisplay = value[1];
             }
@@ -186,6 +205,26 @@ const handleCurrentEntryButton = () => {
     }
 }
 
+const handleResetButton = () => clearValues(true, true, true, true)
+
+const clearValues = (objNew=false, objOld=false, display=false, currentState=false) => {
+
+    const {value} = strings
+
+    objNew === true ? clearObj(calcState.newState, currentState) : calcState.newState
+    objOld === true ? clearObj(calcState.oldState, currentState) : calcState.oldState
+
+    if (display === true) updateDisplay(value[1], value[2])
+}
+
+const clearObj = (object, currentState) => {
+
+    const {value} = strings
+
+    Object.keys(object).forEach(key => object[key] = value[5])
+    if (currentState) calcState.current = value[5]
+}
+
 const handleCalcDeleteButton = () => {
 
     const {newState} = calcState, currentState = getCurrentState()
@@ -199,90 +238,6 @@ const handleCalcDeleteButton = () => {
 
     updateDisplay(false, result.toString())
     handleError()
-}
-
-const handleError = () => {
-    fixNaNOrInfinity(calcState)
-    fixDisplayError(bottomDisplay)
-}
-
-const fixDisplayError = (display) => {
-
-    const displayError = display.textContent
-    const {errorMsg, errorType, value} = strings
-    
-    switch (displayError) {
-        case errorType[1]:
-        case errorType[2]:
-            updateDisplay(false, errorMsg[1])
-            break;
-        case errorType[3]:
-            updateDisplay(false, value[2])
-            break;
-        default:
-            return;
-    }
-}
-
-const fixNaNOrInfinity = (object) => {
-
-    const {value} = strings
-
-    Object.keys(object).forEach((key) => {
-        if (key !== value[6]) { 
-            for (let subKey in object[key]) {
-                if (!isFinite(object[key][subKey]) && subKey !== value[7]) object[key][subKey] = Number(value[2])
-            }
-        }
-    });
-}
-
-const handleResetButton = () => clearValues(true, true, true, true)
-
-const clearValues = (objNew=false, objOld=false, display=false, currentState=false) => {
-
-    const {value} = strings
-
-    objNew === true ? clearObj(calcState.newState, currentState) : calcState.newState
-    objOld === true ? clearObj(calcState.oldState, currentState) : calcState.oldState
-
-    if (display === true) updateDisplay(value[1], value[2])
-}
-
-const clearObj = (objct, currentState) => {
-
-    const {value} = strings
-
-    Object.keys(objct).forEach(key => objct[key] = value[5])
-    if (currentState) calcState.current = value[5]
-}
-
-const copyObjectToOld = (oldObjct,newObjct) => {
-    Object.keys(oldObjct).forEach((key) => {
-        if (newObjct.hasOwnProperty(key)) {
-            oldObjct[key] = newObjct[key];
-        }
-    })
-}
-
-const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
-
-    if (topDisplayValue){
-        // console.log(topDisplayValue)
-        // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
-        topDisplay.textContent = topDisplayValue
-    }
-    if (bottomDisplayValue) {
-        if (operator){
-            switch (operator){
-                case "+":
-                    bottomDisplay.textContent += bottomDisplayValue
-                    break;
-                default:
-                    return
-            }        
-        } else bottomDisplay.textContent = bottomDisplayValue
-    }
 }
 
 const handleDecimalButton = () => {
@@ -322,31 +277,77 @@ const isDecimalEnd = () => {
     updateDisplay(false, result)
 }
 
-function handleSquareButton(){
-    
-    const {newState} = calcState, currentState = getCurrentState()
-    const {value} = strings
-    let topDisplay = false, bottomDisplay = false, swap = newState.operator
-
-        if (currentState){
-            newState.operator = this.value
-            bottomDisplay = operate(newState[currentState], false, newState.operator)
-            newState[currentState] = newState.result
-
-            newState.result = value[5]
-            newState.operator = currentState === value[3] ? value[5] : swap
-        } else return 
-
-    updateDisplay(topDisplay, bottomDisplay)
+const handleError = () => {
+    fixNaNOrInfinity(calcState)
+    fixDisplayError(bottomDisplay)
 }
 
-const getCurrentState = () => calcState.current
-const updateCurrentState = (state) => calcState.current = state
+const fixDisplayError = (display) => {
+
+    const displayError = display.textContent
+    const {errorMsg, errorType, value} = strings
+    let displayMsg
+    
+    switch (displayError) {
+        case errorType[1]:
+        case errorType[2]:
+            displayMsg = errorMsg[1]
+            break;
+        case errorType[3]:
+            displayMsg = value[2]
+            break;
+        default:
+            return;
+    }
+
+    updateDisplay(false, displayMsg)
+}
+
+const fixNaNOrInfinity = (object) => {
+
+    const {value} = strings
+
+    Object.keys(object).forEach((key) => {
+        if (key !== value[6]) { 
+            for (let subKey in object[key]) {
+                if (!isFinite(object[key][subKey]) && subKey !== value[7]) object[key][subKey] = Number(value[2])
+            }
+        }
+    });
+}
+
+const copyObjectToOld = (oldObject,newObject) => {
+    Object.keys(oldObject).forEach((key) => {
+        if (newObject.hasOwnProperty(key)) oldObject[key] = newObject[key]
+    })
+}
 
 const checkFloatLength = (element) => {
     const [array, decimalPoint] = element.toString().split(".")
     return decimalPoint !== undefined ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
 }
+
+const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
+    if (topDisplayValue){
+        // console.log(topDisplayValue)
+        // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
+        topDisplay.textContent = topDisplayValue
+    }
+    if (bottomDisplayValue) {
+        if (operator){
+            switch (operator){
+                case "+":
+                    bottomDisplay.textContent += bottomDisplayValue
+                    break;
+                default:
+                    return
+            }        
+        } else bottomDisplay.textContent = bottomDisplayValue
+    }
+}
+
+const getCurrentState = () => calcState.current
+const updateCurrentState = (state) => calcState.current = state
 
 decimalButton.addEventListener("click", handleDecimalButton)
 deleteButton.addEventListener("click", handleCalcDeleteButton)
