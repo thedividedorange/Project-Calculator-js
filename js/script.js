@@ -1,12 +1,12 @@
 const buttonsNumbers = document.querySelectorAll(".calcButtons button.number")
 const buttonsOperations = document.querySelectorAll(".calcButtons button.operation")
 const deleteButton = document.querySelector(".calcButtons button.delete")
-const currentEntry = document.querySelector(".calcButtons button.ce")
+const currentEntryButton = document.querySelector(".calcButtons button.ce")
 const resetCalculator = document.querySelector(".calcButtons button.reset")
-const equals = document.querySelector(".calcButtons button.equals")
-const percent = document.querySelector(".calcButtons button.percent")
-const decimal = document.querySelector(".calcButtons button.decimal")
-const square = document.querySelector(".calcButtons button.square")
+const equalsButton = document.querySelector(".calcButtons button.equals")
+const percentButton = document.querySelector(".calcButtons button.percent")
+const decimalButton = document.querySelector(".calcButtons button.decimal")
+const squareButton = document.querySelector(".calcButtons button.square")
 const topDisplay = document.querySelector(".display .top")
 const bottomDisplay = document.querySelector(".display .bottom")
 
@@ -253,16 +253,16 @@ const clearObj = (objct, currentState) => {
 
     const {value} = strings
 
-    for (let i in objct) objct[i] = value[5]
+    Object.keys(objct).forEach(key => objct[key] = value[5])
     if (currentState) calcState.current = value[5]
 }
 
 const copyObjectToOld = (oldObjct,newObjct) => {
-    for (oldkeys in oldObjct){
-        for (newkeys in newObjct){
-            oldkeys === newkeys ? oldObjct[oldkeys] = newObjct[newkeys] : oldObjct[oldkeys]
+    Object.keys(oldObjct).forEach((key) => {
+        if (newObjct.hasOwnProperty(key)) {
+            oldObjct[key] = newObjct[key];
         }
-    }
+    })
 }
 
 const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
@@ -348,12 +348,12 @@ const checkFloatLength = (element) => {
     return decimalPoint !== undefined ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
 }
 
-decimal.addEventListener("click", handleDecimalButton)
+decimalButton.addEventListener("click", handleDecimalButton)
 deleteButton.addEventListener("click", handleCalcDeleteButton)
-currentEntry.addEventListener("click", handleCurrentEntryButton)
+currentEntryButton.addEventListener("click", handleCurrentEntryButton)
 resetCalculator.addEventListener("click", handleResetButton)
-equals.addEventListener("click", handleEqualsButton)
-percent.addEventListener("click", handlePercentButton)
-square.addEventListener("click", handleSquareButton)
+equalsButton.addEventListener("click", handleEqualsButton)
+percentButton.addEventListener("click", handlePercentButton)
+squareButton.addEventListener("click", handleSquareButton)
 buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
 buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickButton))
