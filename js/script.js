@@ -78,7 +78,7 @@ function handleOperationsClickEvt(){
             bottomDisplay = operate(newState.previous, newState.next, newState.operator)
             copyObjectToOld(oldState, newState)
             newState.operator = this.value
-            topDisplay = newState.result + newState.operator 
+            topDisplay = `${newState.result} ${newState.operator}`
     
             clearValues(true)
             newState.previous = parseFloat(bottomDisplay)
@@ -86,13 +86,13 @@ function handleOperationsClickEvt(){
             newState.operator = this.value
         } else {
             newState.operator = this.value
-            topDisplay = newState.previous + newState.operator
+            topDisplay = `${newState.previous} ${newState.operator}`
             updateCurrentState(undefined)
         }
     } else if (oldState.result) {
         newState.previous = oldState.result
         newState.operator = this.value
-        topDisplay = newState.previous + newState.operator
+        topDisplay = `${newState.previous} ${newState.operator}`
     }
 
     updateDisplay(topDisplay, bottomDisplay)
@@ -110,6 +110,8 @@ function handleNumbersClickButton(){
     } else {
         newState[currentState] = parseFloat(newState[currentState]);
     }
+    
+    newState[currentState] = checkFloatLength(newState[currentState])
 
     updateCurrentState(currentState)
     updateDisplay(false, newState[currentState].toString())
@@ -324,15 +326,13 @@ const copyObjectToOld = (oldObject,newObject) => {
 
 const checkFloatLength = (element) => {
     const [array, decimalPoint] = element.toString().split(".")
-    return decimalPoint !== undefined ? decimalPoint.length >=4 ? element.toFixed(4) : element : array
+    return decimalPoint !== undefined ? decimalPoint.length >=8 ? element.toFixed(8) : element : array
 }
 
 const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
-    if (topDisplayValue){
-        // console.log(topDisplayValue)
-        // topDisplayValue.toString().split(".")[1].length >= 4 ? topDisplay.textContent = topDisplayValue.toFixed(4) : 
-        topDisplay.textContent = topDisplayValue
-    }
+  
+    if (topDisplayValue) topDisplay.textContent = topDisplayValue
+    
     if (bottomDisplayValue) {
         if (operator){
             switch (operator){
