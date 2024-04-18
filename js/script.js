@@ -20,7 +20,7 @@ const operations = {
         b = newState.next = a * b / 100        
         return a+b
     },
-    square: (number) => Math.pow(number, 2)
+    square: (num) => Math.pow(num, 2)
 }
 
 const calcState = {
@@ -32,10 +32,8 @@ const calcState = {
 const strings = {
     errorMsg: {1: 'Cannot Divide by zero'},
     errorType: {1: '-Infinity', 2: 'Infinity', 3: 'NaN'},
-    value: {1: ' ', 2: '0', 3: 'previous', 4: 'next', 5: ''}
+    value: {1: ' ', 2: '0', 3: 'previous', 4: 'next', 5: '', 6: 'current', 7: 'operator'}
 }
-
-
 
 function operate(previous,next, operator){
 
@@ -70,7 +68,7 @@ function operate(previous,next, operator){
 
 function handleOperationsClickEvt(){
 
-    const {oldState, newState} = calcState
+    const {oldState, newState} = calcState, {value} = strings
     let topDisplay = false, bottomDisplay = false
     isDecimalEnd()
 
@@ -83,7 +81,7 @@ function handleOperationsClickEvt(){
     
             clearValues(true)
             newState.previous = parseFloat(bottomDisplay)
-            bottomDisplay = '0'
+            bottomDisplay = value[2]
             newState.operator = this.value
         } else {
             newState.operator = this.value
@@ -97,56 +95,6 @@ function handleOperationsClickEvt(){
     }
 
     updateDisplay(topDisplay, bottomDisplay)
-    // if(newState.previous){
-    //     if(newState.next){
-    //         bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
-    //         console.log(`1`)
-    //         copyObjectToOld(oldState, newState)
-    //         newState.operator = this.value
-    //         topDisplay.textContent = newState.result + newState.operator  
-    
-    //         clearValues(true, false, false, false)
-    //         newState.previous = parseFloat(bottomDisplay.textContent)
-    //         bottomDisplay.textContent = '0'
-    //         newState.operator = this.value
-    //         console.log(`2`)
-    //     } else {
-    //         newState.operator = this.value
-    //         topDisplay.textContent = newState.previous + newState.operator
-    //         updateCurrentState(undefined)
-    //         console.log(`3`)
-    //     }
-    // } else if(!newState.previous && oldState.result) {
-    //     newState.previous = oldState.result
-    //     newState.operator = this.value
-    //     topDisplay.textContent = newState.previous + newState.operator
-    //     console.log(`4`)
-    // } else {
-    //     console.log(`5`)
-    // }
-
-    // if (newState.previous === '' && oldState.result !== ''){
-    //     newState.previous = oldState.result
-    //     newState.operator = this.value
-    //     topDisplay.textContent = newState.previous + newState.operator
-
-    // } else if (newState.previous !== '' && newState.next !== ''){
-    //     bottomDisplay.textContent = operate(newState.previous, newState.next, newState.operator)
-
-    //     copyObjectToOld(oldState, newState)
-    //     newState.operator = this.value
-    //     topDisplay.textContent = newState.result + newState.operator  
-
-    //     clearValues(true, false, false, false)
-    //     newState.previous = parseFloat(bottomDisplay.textContent)
-    //     bottomDisplay.textContent = '0'
-    //     newState.operator = this.value
-
-    // } else if(newState.previous !== '' && newState.next === ''){
-    //     newState.operator = this.value
-    //     topDisplay.textContent = newState.previous + newState.operator
-    //     updateCurrentState(undefined)
-    // }
 }
 
 function handleNumbersClickButton(){
@@ -231,8 +179,8 @@ const handleCurrentEntryButton = () => {
     const {value} = strings
 
     if (currentState){
-        newState[currentState] = 0
-        updateDisplay(false,  value[2])
+        newState[currentState] = Number(value[2])
+        updateDisplay(false, value[2])
     } else if (currentState === value[5]){
         clearValues(true, false, true)
     }
@@ -266,10 +214,10 @@ const fixDisplayError = (display) => {
     switch (displayError) {
         case errorType[1]:
         case errorType[2]:
-            updateDisplay(false, errorMsg[1]);
+            updateDisplay(false, errorMsg[1])
             break;
         case errorType[3]:
-            updateDisplay(false, value[2]);
+            updateDisplay(false, value[2])
             break;
         default:
             return;
@@ -277,10 +225,13 @@ const fixDisplayError = (display) => {
 }
 
 const fixNaNOrInfinity = (object) => {
+
+    const {value} = strings
+
     Object.keys(object).forEach((key) => {
-        if (key !== 'current') { 
+        if (key !== value[6]) { 
             for (let subKey in object[key]) {
-                if (!isFinite(object[key][subKey]) && subKey !== 'operator') object[key][subKey] = 0;   
+                if (!isFinite(object[key][subKey]) && subKey !== value[7]) object[key][subKey] = Number(value[2])
             }
         }
     });
@@ -302,9 +253,7 @@ const clearObj = (objct, currentState) => {
 
     const {value} = strings
 
-    for (let i in objct){
-        objct[i] = value[5]
-    }
+    for (let i in objct) objct[i] = value[5]
     if (currentState) calcState.current = value[5]
 }
 
@@ -343,8 +292,8 @@ const handleDecimalButton = () => {
     if (currentState){
         const isDecimal = checkDecimalPoint(currentState)
         if (!isDecimal) {
-            newState[currentState] = newState[currentState].toString().concat(".");
-            updateDisplay(false, '.', '+');
+            newState[currentState] = newState[currentState].toString().concat(".")
+            updateDisplay(false, '.', '+')
         }
     } else return
 }
