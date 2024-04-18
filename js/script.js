@@ -151,12 +151,12 @@ function handleOperationsClickEvt(){
 
 function handleNumbersClickButton(){
 
-    const {newState} = calcState
-    const currentState = newState.operator === '' ? 'previous' : 'next'
+    const {newState} = calcState, {value} = strings
+    const currentState = newState.operator === '' ? value[3] : value[4]
 
     newState[currentState] += this.value
         
-    if (newState[currentState].charAt(0) === '0') {
+    if (newState[currentState].charAt(0) === value[2]) {
         newState[currentState] = newState[currentState].length >= 2 ? parseFloat(newState[currentState].substring(1)) : parseFloat(newState[currentState])
     } else {
         newState[currentState] = parseFloat(newState[currentState]);
@@ -168,17 +168,18 @@ function handleNumbersClickButton(){
 
 function handlePercentButton(){
 
-    const {oldState, newState} = calcState, currentState = getCurrentState();
+    const {oldState, newState} = calcState, currentState = getCurrentState()
+    const {value} = strings
     let topDisplay = false, bottomDisplay = false, swap = newState.operator
 
     newState.operator = this.value
 
     if (currentState){
-        if (currentState === 'previous'){
-            newState[currentState] = 0
+        if (currentState === value[3]){
+            newState[currentState] = Number(value[2])
             bottomDisplay = newState[currentState].toString()
             newState.operator = swap
-            topDisplay = ' '
+            topDisplay = value[1]
         } else {
             bottomDisplay = operate(newState.previous, newState[currentState], newState.operator)
             newState.operator = swap
@@ -195,13 +196,13 @@ function handlePercentButton(){
 
 const handleEqualsButton = () => {
 
-    const {oldState, newState} = calcState
+    const {oldState, newState} = calcState, {value} = strings
     let topDisplay = false, bottomDisplay = false
 
     isDecimalEnd()
 
-    if (newState.previous !== '') {
-        if (newState.next !== '') {
+    if (newState.previous !== value[5]) {
+        if (newState.next !== value[5]) {
             bottomDisplay = operate(newState.previous, newState.next, newState.operator);
             topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`;
 
@@ -213,7 +214,7 @@ const handleEqualsButton = () => {
                 topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`;
                 bottomDisplay = `${oldState.result}`;
             } else {
-                topDisplay = ' ';
+                topDisplay = value[1];
             }
 
             clearValues(true, false, false, true);
@@ -227,7 +228,7 @@ const handleEqualsButton = () => {
 const handleCurrentEntryButton = () => {
 
     const {newState} = calcState, currentState = getCurrentState()
-    const {value} = string
+    const {value} = strings
 
     if (currentState){
         newState[currentState] = 0
