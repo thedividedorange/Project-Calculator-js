@@ -204,8 +204,8 @@ const handleCurrentEntryButton = () => {
     if (currentState){
         newState[currentState] = Number(value[2])
         updateDisplay(false, value[2])
-    } else if (currentState === value[5]){
-        clearValues(true, false, true)
+    } else {
+        clearValues(true, true, true, true)
     }
 }
 
