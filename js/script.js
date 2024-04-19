@@ -43,23 +43,23 @@ function operate(previous,next, operator){
     switch (operator){
         case sign[1]:
             newState.result = operations.add(previous,next)
-            break;
+            break
         case sign[2]:
             newState.result = operations.substract(previous,next)
-            break;
+            break
         case sign[3]:
             newState.result = operations.multiply(previous,next)
-            break;
+            break
         case sign[4]:
             newState.result = operations.divide(previous,next)
-            break;
+            break
         case sign[5]:
             newState.result = operations.percent(previous,next)
-            break;
+            break
         case sign[6]:
             let num = previous
             newState.result = operations.square(num)
-            break;
+            break
         default:
             return
     }
@@ -177,18 +177,18 @@ const handleEqualsButton = () => {
             bottomDisplay = operate(newState.previous, newState.next, newState.operator)
             topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
 
-            copyObjectToOld(oldState, newState);
-            clearValues(true);
-            updateCurrentState(undefined);
+            copyObjectToOld(oldState, newState)
+            clearValues(true)
+            updateCurrentState(undefined)
         } else {
             if(newState.previous === oldState.result) {
                 topDisplay = `${oldState.previous} ${oldState.operator} ${oldState.next} =`
                 bottomDisplay = `${oldState.result}`
             } else {
-                topDisplay = value[1];
+                topDisplay = value[1]
             }
 
-            clearValues(true, false, false, true);
+            clearValues(true, false, false, true)
         }
     } else return
 
@@ -296,12 +296,12 @@ const fixDisplayError = (display) => {
         case errorType[1]:
         case errorType[2]:
             displayMsg = errorMsg[1]
-            break;
+            break
         case errorType[3]:
             displayMsg = value[2]
-            break;
+            break
         default:
-            return;
+            return
     }
 
     updateDisplay(false, displayMsg)
@@ -317,7 +317,7 @@ const fixNaNOrInfinity = (object) => {
                 if (!isFinite(object[key][subKey]) && subKey !== value[7]) object[key][subKey] = Number(value[2])
             }
         }
-    });
+    })
 }
 
 const copyObjectToOld = (oldObject,newObject) => {
