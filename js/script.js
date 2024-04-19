@@ -17,7 +17,7 @@ const operations = {
     multiply: (a, b) => a * b,
     percent: (a, b) => {
         const {newState} = calcState
-        b = newState.next = parseFloat(checkFloatLength(a * b / 100))  
+        b = newState.next = checkFloatLength(a * b / 100)
         return a+b
     },
     square: (num) => Math.pow(num, 2)
@@ -63,8 +63,8 @@ function operate(previous,next, operator){
         default:
             return
     }
-    
-    return checkFloatLength(newState.result)
+
+    return newState.result = checkFloatLength(newState.result)
 }
 
 function handleOperationsClickEvt(){
@@ -328,7 +328,8 @@ const copyObjectToOld = (oldObject,newObject) => {
 
 const checkFloatLength = (element) => {
     const [ array, decimalPoint ] = element.toString().split(".")
-    return decimalPoint !== undefined ? decimalPoint.length >=8 ? element.toFixed(8) : element : array
+    const result = decimalPoint !== undefined ? decimalPoint.length >=8 ? element.toFixed(8) : element : array
+    return parseFloat(result)
 }
 
 const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
