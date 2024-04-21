@@ -8,7 +8,7 @@ This project is developed as part of [The Odin Project](https://www.theodinproje
 
 ## To Do
 
-- Some Operators are pending ; 1/x, 2rootx, +-
+- Some Operators are pending ; 2rootx, +-
 - Keyboard functioning is still pending
 
 ## Features
