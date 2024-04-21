@@ -70,7 +70,7 @@
 
             isDecimalEnd()
 
-            if (newState.previous){
+            if (newState.previous || newState.previous === Number(value[2])){
                 if (newState.next){
                     bottomDisplay = operate(newState.previous, newState.next, newState.operator)
                     copyObjectToOld(oldState, newState)
@@ -86,7 +86,7 @@
                     topDisplay = `${newState.previous} ${newState.operator}`
                     updateCurrentState(undefined)
                 }
-            } else if (oldState.result) {
+            } else if (oldState.result || oldState.result === Number(value[2])) {
                 newState.previous = oldState.result
                 newState.operator = this.value
                 topDisplay = `${newState.previous} ${newState.operator}`
@@ -108,7 +108,7 @@
             }
 
             newState[currentState] = checkFloatLength(newState[currentState])
-            
+
             updateCurrentState(currentState)
             updateDisplay(false, newState[currentState].toString())
         }
@@ -189,16 +189,17 @@
             } else newState.operator = swap
 
             updateDisplay(topDisplay, bottomDisplay)
+            handleError()
         }
 
         const handleEqualsButton = () => {
 
             let topDisplay = false, bottomDisplay = false
-
+            
             isDecimalEnd()
 
-            if (newState.previous) {
-                if (newState.next) {
+            if (newState.previous || newState.previous === Number(value[2])) {
+                if (newState.next || newState.next === Number(value[2])) {
                     bottomDisplay = operate(newState.previous, newState.next, newState.operator)
                     topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
 
@@ -228,9 +229,7 @@
             if (currentState){
                 newState[currentState] = Number(value[2])
                 updateDisplay(false, value[2])
-            } else {
-                clearValues(true, true, true, true)
-            }
+            } else clearValues(true, true, true, true)
         }
 
         const handleResetButton = () => clearValues(true, true, true, true)
@@ -347,7 +346,6 @@
         const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
         
             if (topDisplayValue) topDisplay.textContent = topDisplayValue
-
             if (bottomDisplayValue) {
                 if (operator){
                     switch (operator) { case "+": bottomDisplay.textContent += bottomDisplayValue }
@@ -364,26 +362,17 @@
         const buttonsOperations = document.querySelectorAll(".calcButtons button.operation")
         const topDisplay = document.querySelector(".display .top")
         const bottomDisplay = document.querySelector(".display .bottom")
+
         const buttonClassNames = {
-            'operation square': handleSquareButton,
-            'operation percent': handlePercentButton,
-            'operation reciprocal': handleReciprocalButton,
-            'operation decimal': handleDecimalButton,
-            'operation equals': handleEqualsButton,
-            'operation ce': handleCurrentEntryButton,
-            'operation delete': handleCalcDeleteButton,
-            'operation reset': handleResetButton,
-            'operation': handleOperationsClickEvt
+            'operation square': handleSquareButton, 'operation percent': handlePercentButton, 'operation reciprocal': handleReciprocalButton,
+            'operation decimal': handleDecimalButton, 'operation equals': handleEqualsButton, 'operation ce': handleCurrentEntryButton,
+            'operation delete': handleCalcDeleteButton, 'operation reset': handleResetButton, 'operation': handleOperationsClickEvt
         }
 
-        buttonsOperations.forEach(function(button){
-            button.addEventListener("click", function(evt){
-                const className = evt.target.classList.value
-                if(className){
-                    buttonClassNames[className].bind(this)()
-                } else {
-                    console.log('error with selected button className')
-                } 
+        buttonsOperations.forEach((button) => {
+            button.addEventListener("click", function(e){
+                const className = e.target.classList.value
+                if(className) buttonClassNames[className].bind(this)()
             })
         })
 
