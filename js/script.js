@@ -1,17 +1,5 @@
 (function () {
     document.addEventListener("DOMContentLoaded", function() {
-        const buttonsNumbers = document.querySelectorAll(".calcButtons button.number")
-        const buttonsOperations = document.querySelectorAll(".calcButtons button.operation")
-        const deleteButton = document.querySelector(".calcButtons button.delete")
-        const currentEntryButton = document.querySelector(".calcButtons button.ce")
-        const resetCalculator = document.querySelector(".calcButtons button.reset")
-        const equalsButton = document.querySelector(".calcButtons button.equals")
-        const percentButton = document.querySelector(".calcButtons button.percent")
-        const decimalButton = document.querySelector(".calcButtons button.decimal")
-        const squareButton = document.querySelector(".calcButtons button.square")
-        const topDisplay = document.querySelector(".display .top")
-        const bottomDisplay = document.querySelector(".display .bottom")
-
         const operations = {
             add: (a, b) => a + b,
             substract: (a, b) => a - b,
@@ -22,7 +10,8 @@
                 b = newState.next = checkFloatLength(a * b / 100)
                 return a+b
             },
-            square: (num) => Math.pow(num, 2)
+            square: (num) => Math.pow(num, 2),
+            reciprocal: (num) => 1/num
         }
 
         const calcState = {
@@ -35,14 +24,15 @@
             errorMsg: {1: 'Cannot Divide by zero'},
             errorType: {1: '-Infinity', 2: 'Infinity', 3: 'NaN'},
             value: {1: ' ', 2: '0', 3: 'previous', 4: 'next', 5: '', 6: 'current', 7: 'operator'},
-            sign: {1: '+', 2: '-', 3: '*', 4: '÷', 5: '%', 6: 'x²'}
+            sign: {1: '+', 2: '-', 3: '*', 4: '÷', 5: '%', 6: 'x²', 7: '1/x'}
         }
 
         const { oldState, newState } = calcState
         const { errorMsg, errorType, value, sign } = strings
 
-        function operate(previous,next, operator){
-        
+        function operate(previous, next, operator){
+
+            let num
             switch (operator){
                 case sign[1]:
                     newState.result = operations.add(previous,next)
@@ -60,8 +50,12 @@
                     newState.result = operations.percent(previous,next)
                     break
                 case sign[6]:
-                    let num = previous
+                    num = previous
                     newState.result = operations.square(num)
+                    break
+                case sign[7]:
+                    num = previous
+                    newState.result = operations.reciprocal(num)
                     break
                 default:
                     return
@@ -131,13 +125,12 @@
                     newState[currentState] = Number(value[2])
                     bottomDisplay = newState[currentState].toString()
                     newState.operator = swap
-                    topDisplay = value[1]
                 } else {
                     bottomDisplay = operate(newState.previous, newState[currentState], newState.operator)
                     newState.operator = swap
                     topDisplay = `${newState.previous} ${newState.operator} ${newState[currentState]} =`
                     bottomDisplay = operate(newState.previous, newState[currentState], newState.operator)
-
+                    
                     copyObjectToOld(oldState, newState)
                     clearValues(true)
                     updateCurrentState(undefined)
@@ -148,7 +141,7 @@
         }
 
         function handleSquareButton(){
-            
+
             const currentState = getCurrentState()
             let topDisplay = false, bottomDisplay = false, swap = newState.operator
 
@@ -160,6 +153,40 @@
                     newState.result = value[5]
                     newState.operator = currentState === value[3] ? value[5] : swap
                 } else return 
+
+            updateDisplay(topDisplay, bottomDisplay)
+        }
+
+        function handleReciprocalButton(){
+
+            const currentState = getCurrentState()
+            let temp, topDisplay = false, bottomDisplay = false, swap = newState.operator
+
+            newState.operator = this.value
+
+            if (currentState){
+                if(currentState === value[3]){
+                    bottomDisplay = operate(newState[currentState], false, newState.operator)
+                    temp = newState[currentState]
+                    topDisplay = topDisplay = `1/(${temp}) =`
+
+                    newState[currentState] = newState.result
+                    newState.result = value[5]
+                    newState.operator = swap
+                } else {
+                    bottomDisplay = operate(newState[currentState], false, newState.operator)
+                    temp = newState[currentState]
+                    newState[currentState] = newState.result
+                    newState.operator = swap
+
+                    bottomDisplay = operate(newState.previous, newState[currentState], newState.operator)
+                    topDisplay = `${newState.previous} ${newState.operator} 1/(${temp}) =`
+
+                    copyObjectToOld(oldState, newState)
+                    clearValues(true)
+                    updateCurrentState(undefined)
+                }
+            } else newState.operator = swap
 
             updateDisplay(topDisplay, bottomDisplay)
         }
@@ -332,15 +359,34 @@
 
         const getCurrentState = () => calcState.current
         const updateCurrentState = (state) => calcState.current = state
+        
+        const buttonsNumbers = document.querySelectorAll(".calcButtons button.number")
+        const buttonsOperations = document.querySelectorAll(".calcButtons button.operation")
+        const topDisplay = document.querySelector(".display .top")
+        const bottomDisplay = document.querySelector(".display .bottom")
+        const buttonClassNames = {
+            'operation square': handleSquareButton,
+            'operation percent': handlePercentButton,
+            'operation reciprocal': handleReciprocalButton,
+            'operation decimal': handleDecimalButton,
+            'operation equals': handleEqualsButton,
+            'operation ce': handleCurrentEntryButton,
+            'operation delete': handleCalcDeleteButton,
+            'operation reset': handleResetButton,
+            'operation': handleOperationsClickEvt
+        }
 
-        decimalButton.addEventListener("click", handleDecimalButton)
-        deleteButton.addEventListener("click", handleCalcDeleteButton)
-        currentEntryButton.addEventListener("click", handleCurrentEntryButton)
-        resetCalculator.addEventListener("click", handleResetButton)
-        equalsButton.addEventListener("click", handleEqualsButton)
-        percentButton.addEventListener("click", handlePercentButton)
-        squareButton.addEventListener("click", handleSquareButton)
-        buttonsOperations.forEach(button => button.addEventListener("click", handleOperationsClickEvt))
-        buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickButton))
+        buttonsOperations.forEach(function(button){
+            button.addEventListener("click", function(evt){
+                const className = evt.target.classList.value
+                if(className){
+                    buttonClassNames[className].bind(this)()
+                } else {
+                    console.log('error with selected button className')
+                } 
+            })
+        })
+
+        buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickButton))   
     })
 }())
