@@ -82,6 +82,12 @@ header {
     padding: 2em;
 }
 
+@media screen and (max-width: 810px){
+    #container-mid{
+        flex-direction: column-reverse!important;
+    }
+}
+
 .leftPart {
     display: flex;
     flex-direction: column;
@@ -195,4 +201,5 @@ div#footer {
     font-size: 1.4rem;
     font-weight: bold;
     padding: 0.3em;
+    background: rgb(0, 0, 0);
 }
