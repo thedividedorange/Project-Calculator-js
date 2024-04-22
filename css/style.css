@@ -50,9 +50,9 @@ b {
 
 header {
     display: flex;
-    margin: 8px 15% 0;
+    margin: 8px 5% 0;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1600px;
 }
 
 .navbar {
