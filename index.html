@@ -5,6 +5,7 @@
         <meta name="viewport" width="device-width initial-scale=1.0">
 
         <link rel="stylesheet" type="text/css" href="./css/style.css">
+        <script type="text/javaScript" src="./js/script.js"></script>
 
         <title>JavaScript Calculator</title>
 
@@ -13,52 +14,80 @@
     <body>
         <div id="container-top">
             <header>
-                <h1>JavaScript Calculator</h1>
+                <div class="navbar">
+                    <div class="leftnav">JavaScript Calculator</div>
+                    <div class="rigtnav">x</div>
+                </div>
             </header>
         </div>
-        
+
         <div id="container-mid">
-            <div class="calculator">
-                <div class="display">
-                    <div class="top"></div>
-                    <div class="bottom">0</div>
-                </div>
-                <div class="body">
-                    <div class="calcButtons">
-                        <button class="operation percent" name="percent" value="%">%</button>
-                        <button class="operation ce" name="ce" value="ce">CE</button>
-                        <button class="operation reset" name="c" value="c">C</button>
-                        <button class="operation delete" name="del" value="del">DEL</button>
-                        <button class="operation reciprocal" name="reciprocal" value="1/x">1/x</button>
-                        <button class="operation square" name="square" value="x²">x²</button>
-                        <button class="operation" name="denominator" value="2√x">2√x</button>
-                        <button class="operation" name="divide" value="÷">÷</button>
-                        <button class="number" name="7" value="7">7</button>
-                        <button class="number" name="8" value="8">8</button>
-                        <button class="number" name="9" value="9">9</button>
-                        <button class="operation" name="x" value="*">x</button>
-                        <button class="number" name="4" value="4">4</button>
-                        <button class="number" name="5" value="5">5</button>
-                        <button class="number" name="6" value="6">6</button>
-                        <button class="operation" name="-" value="-">-</button>
-                        <button class="number" name="1" value="1">1</button>
-                        <button class="number" name="2" value="2">2</button>
-                        <button class="number" name="3" value="3">3</button>
-                        <button class="operation" name="+" value="+">+</button>
-                        <button class="operation" name="+/-" value="+/-">+/-</button>
-                        <button class="number" name="0" value="0">0</button>
-                        <button class="operation decimal" name="." value=".">.</button>
-                        <button class="operation equals" name="=" value="=">=</button>
+            <div class="leftPart">
+                <h1>Simple Calculator</h2>
+                <p>Welcome to the Simple Calculator web application! This calculator allows you to perform basic arithmetic calculations right in your web browser. 
+                    Whether you're at home, at work, or on the go, you can use this calculator anytime you need to crunch some numbers.</p>
+                <p>Entering Numbers: To enter numbers, simply click on the buttons labeled with digits (0-9). You can enter multiple digits to form larger numbers.</p>
+                <ol>
+                    <li><b>Entering Numbers: </b>To enter numbers, simply click on the buttons labeled with digits (0-9). You can enter multiple digits to form larger numbers.</li>
+                    <li><b>Performing Operations:</b>Use the buttons labeled with mathematical symbols (+, -, ×, ÷) to perform addition, subtraction, multiplication, and division respectively.
+                        You can also perform other operations like percentage (%), square (x²), and reciprocal (1/x) using the designated buttons.
+                    </li>
+                    <li>Once you've entered numbers and selected the desired operation, simply click on the equals button (=) to see the result displayed on the screen.</li>
+                    <li><b>Clearing and Resetting:</b>
+                        <ul>
+                            <li>If you need to clear the current entry, use the CE button.</li>
+                            <li>  To reset the calculator and start fresh, click on the C button.</li>
+                            <li> If you make a mistake while entering a number, you can delete the last digit using the DEL button.</li>
+                        </ul>
+                    </li>
+                    <li><b>Error Handling:</b>Don't worry about making mistakes! The calculator handles division by zero and will display an error message if necessary.
+                    </li>
+                </ol>
+            </div>
+            <div class="rightPart">
+                <div class="calculator">
+                    <div class="display">
+                        <div class="top"></div>
+                        <div class="bottom">0</div>
+                    </div>
+                    <div class="body">
+                        <div class="calcButtons">
+                            <button class="operation percent" name="percent" value="%">%</button>
+                            <button class="operation ce" name="ce" value="ce">CE</button>
+                            <button class="operation reset" name="c" value="c">C</button>
+                            <button class="operation delete" name="del" value="del">DEL</button>
+                            <button class="operation reciprocal" name="reciprocal" value="1/x">1/x</button>
+                            <button class="operation square" name="square" value="x²">x²</button>
+                            <button class="operation" name="denominator" value="2√x">2√x</button>
+                            <button class="operation" name="divide" value="÷">÷</button>
+                            <button class="number" name="7" value="7">7</button>
+                            <button class="number" name="8" value="8">8</button>
+                            <button class="number" name="9" value="9">9</button>
+                            <button class="operation" name="x" value="*">x</button>
+                            <button class="number" name="4" value="4">4</button>
+                            <button class="number" name="5" value="5">5</button>
+                            <button class="number" name="6" value="6">6</button>
+                            <button class="operation" name="-" value="-">-</button>
+                            <button class="number" name="1" value="1">1</button>
+                            <button class="number" name="2" value="2">2</button>
+                            <button class="number" name="3" value="3">3</button>
+                            <button class="operation" name="+" value="+">+</button>
+                            <button class="operation" name="+/-" value="+/-">+/-</button>
+                            <button class="number" name="0" value="0">0</button>
+                            <button class="operation decimal" name="." value=".">.</button>
+                            <button class="operation equals" name="=" value="=">=</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="container-bottom">
-            <p>By Leonard</p>
-        <div>
-        <script type="text/javaScript" src="./js/script.js"></script>
-    
+        <footer>
+            <div id="footer">
+                <p class="footer-text">Copyright © 2024 TheDividedOrange. Created for <span class="footer-lightning">⚡</span>TheOdinProject</p>
+            </div>
+        </footer>
+
     </body>
 
 </html>
