@@ -1,6 +1,6 @@
 *{
     font-family:'Trebuchet MS', sans-serif;
-    color:white;
+    color:rgb(255, 255, 255);
 }
 
 html{
@@ -9,7 +9,7 @@ html{
 
 h1 {
     font-size:2.7rem;
-    color: rgba(166, 138, 31, 0.988);
+    color: rgba(255, 213, 52, 0.988);
 }
 
 body {
@@ -17,7 +17,7 @@ body {
     flex-direction: column;
     margin: 0;
     min-height: 100vh;
-    background-color: #373737;
+    background-color: rgb(55, 55, 55);
 }
 
 .navbar {
@@ -39,7 +39,7 @@ li {
 }
 
 b {
-    color: rgba(166, 138, 31, 0.988);
+    color: rgba(255, 213, 52, 0.988);
 }
 
 #container-top{
@@ -63,7 +63,7 @@ header {
 .leftnav {
     font-family: 'Brush Script MT', cursive;
     font-size: 2.8rem;
-    color: rgba(166, 138, 31, 0.988);
+    color: rgba(255, 213, 52, 0.988);
     font-weight: 500;
     text-shadow: -2px 2px 4px rgb(0, 0, 0);
     margin-top: 10px;
@@ -100,7 +100,7 @@ header {
     display: flex;
     flex-direction: column;
     border: 1px solid rgb(0, 0, 0);
-    box-shadow: 1px 0px 0px 6px black;
+    box-shadow: 1px 0px 0px 6px rgb(0, 0, 0);
     border-radius: 0.15em;
     height: fit-content;
     flex: 0 350px;
@@ -139,12 +139,12 @@ header {
 .calcButtons button {
     display: flex;
     width: 24.1%;
-    color: white;
+    color: rgb(255, 255, 255);
     justify-content: center;
     height: 3.5em;
     align-items: center;
     border-radius: 0.4em;
-    border: 0.2px solid grey;
+    border: 0.2px solid rgb(128, 128, 128);
 }
     
 
@@ -178,7 +178,7 @@ header {
 }
 
 .calcButtons .number:focus {
-    background: #1f1f1f;
+    background: rgb(31, 31, 31);
 }
 
 div#container-bottom{
