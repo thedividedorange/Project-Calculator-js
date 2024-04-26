@@ -1,17 +1,17 @@
-(function () {
-    document.addEventListener("DOMContentLoaded", function() {
+// (function () {
+//     document.addEventListener("DOMContentLoaded", function() {
         const operations = {
-            add: (a, b) => a + b,
-            substract: (a, b) => a - b,
-            divide: (a, b) => a / b,
-            multiply: (a, b) => a * b,
-            percent: (a, b) => {
+            '+': (a, b) => a + b,
+            '-': (a, b) => a - b,
+            '÷': (a, b) => a / b,
+            '*': (a, b) => a * b,
+            '%': (a, b) => {
                 const {newState} = calcState
                 b = newState.next = checkFloatLength(a * b / 100)
                 return a+b
             },
-            square: (num) => Math.pow(num, 2),
-            reciprocal: (num) => 1/num
+            'x²': (num) => Math.pow(num, 2),
+            '1/x': (num) => 1/num
         }
 
         const calcState = {
@@ -31,35 +31,11 @@
         const { errorMsg, errorType, value, sign } = strings
 
         function operate(previous, next, operator){
-
-            let num
-            switch (operator){
-                case sign[1]:
-                    newState.result = operations.add(previous,next)
-                    break
-                case sign[2]:
-                    newState.result = operations.substract(previous,next)
-                    break
-                case sign[3]:
-                    newState.result = operations.multiply(previous,next)
-                    break
-                case sign[4]:
-                    newState.result = operations.divide(previous,next)
-                    break
-                case sign[5]:
-                    newState.result = operations.percent(previous,next)
-                    break
-                case sign[6]:
-                    num = previous
-                    newState.result = operations.square(num)
-                    break
-                case sign[7]:
-                    num = previous
-                    newState.result = operations.reciprocal(num)
-                    break
-                default:
-                    return
-            }
+            
+            if(operator === sign[6] || operator === sign[7]){
+                let num = previous
+                newState.result = operations[operator](num)
+            } else newState.result = operations[operator](previous, next)
 
             return newState.result = checkFloatLength(newState.result)
         }
@@ -70,7 +46,7 @@
 
             isDecimalEnd()
 
-            if (newState.previous || newState.previous === Number(value[2])){
+            if (isNumber(newState.previous)){
                 if (newState.next){
                     bottomDisplay = operate(newState.previous, newState.next, newState.operator)
                     copyObjectToOld(oldState, newState)
@@ -86,7 +62,7 @@
                     topDisplay = `${newState.previous} ${newState.operator}`
                     updateCurrentState(undefined)
                 }
-            } else if (oldState.result || oldState.result === Number(value[2])) {
+            } else if (isNumber(oldState.result)) {
                 newState.previous = oldState.result
                 newState.operator = this.value
                 topDisplay = `${newState.previous} ${newState.operator}`
@@ -110,7 +86,7 @@
             newState[currentState] = checkFloatLength(newState[currentState])
 
             updateCurrentState(currentState)
-            updateDisplay(false, newState[currentState].toString())
+            updateDisplay(false, newState[currentState])
         }
 
         function handlePercentButton(){
@@ -198,8 +174,8 @@
             
             isDecimalEnd()
 
-            if (newState.previous || newState.previous === Number(value[2])) {
-                if (newState.next || newState.next === Number(value[2])) {
+            if (isNumber(newState.previous)) {
+                if (isNumber(newState.next)) {
                     bottomDisplay = operate(newState.previous, newState.next, newState.operator)
                     topDisplay = `${newState.previous} ${newState.operator} ${newState.next} =`
 
@@ -217,11 +193,11 @@
                     clearValues(true, false, false, true)
                 }
             } else return
-
+          
             updateDisplay(topDisplay, bottomDisplay)
             handleError()
         }
-
+   
         const handleCurrentEntryButton = () => {
 
             const currentState = getCurrentState()
@@ -258,7 +234,7 @@
                 result = newState[currentState] = temp 
             } else return
 
-            updateDisplay(false, result.toString())
+            updateDisplay(false, result)
             handleError()
         }
 
@@ -344,17 +320,19 @@
         }
 
         const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
-        
+
             if (topDisplayValue) topDisplay.textContent = topDisplayValue
+
+            if (isNumber(bottomDisplayValue)) bottomDisplayValue = bottomDisplayValue.toString()
+
             if (bottomDisplayValue) {
                 if (operator){
                     switch (operator) { case "+": bottomDisplay.textContent += bottomDisplayValue }
-                } else {
-                    bottomDisplay.textContent = bottomDisplayValue
-                }
+                } else bottomDisplay.textContent = bottomDisplayValue
             }
         }
 
+        const isNumber = (number) => typeof number === 'number'
         const getCurrentState = () => calcState.current
         const updateCurrentState = (state) => calcState.current = state
         
@@ -377,5 +355,5 @@
         })
 
         buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickButton))   
-    })
-}())
+//     })
+// }())
