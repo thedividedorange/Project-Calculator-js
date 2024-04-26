@@ -1,5 +1,5 @@
-// (function () {
-//     document.addEventListener("DOMContentLoaded", function() {
+(function () {
+    document.addEventListener("DOMContentLoaded", function() {
         const operations = {
             '+': (a, b) => a + b,
             '-': (a, b) => a - b,
@@ -31,7 +31,7 @@
         const { errorMsg, errorType, value, sign } = strings
 
         function operate(previous, next, operator){
-            
+
             if(operator === sign[6] || operator === sign[7]){
                 let num = previous
                 newState.result = operations[operator](num)
@@ -355,5 +355,5 @@
         })
 
         buttonsNumbers.forEach(button => button.addEventListener("click", handleNumbersClickButton))   
-//     })
-// }())
+    })
+}())
