@@ -76,7 +76,8 @@ header {
 #container-mid {
     display: flex;
     flex-direction: row;
-    margin: 0 5% auto;
+    max-width: 1200px;
+    margin: 2% auto auto;
     gap: 4em;
     padding: 2em;
 }
