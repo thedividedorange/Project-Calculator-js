@@ -78,7 +78,6 @@ header {
     flex-direction: row;
     margin: 0 5% auto;
     gap: 4em;
-    max-width: 1200px;
     padding: 2em;
 }
 
