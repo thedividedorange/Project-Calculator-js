@@ -1,206 +1,201 @@
-*{
-    font-family:'Trebuchet MS', sans-serif;
-    color:rgb(255, 255, 255);
+* {
+  font-family: "Trebuchet MS", sans-serif;
+  color: rgb(255, 255, 255);
 }
 
-html{
-    font-size:62.5%
+html {
+  font-size: 62.5%;
 }
 
 h1 {
-    font-size:2.7rem;
-    color: rgba(255, 213, 52, 0.988);
+  font-size: 2.7rem;
+  color: rgba(255, 213, 52, 0.988);
 }
 
 body {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    min-height: 100vh;
-    background-color: rgb(55, 55, 55);
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  min-height: 100vh;
+  background-color: rgb(55, 55, 55);
 }
 
 .navbar {
-    display:flex;
+  display: flex;
 }
 
 p {
-    font-size:1.7rem;
-    line-height: 1.3em;
+  font-size: 1.7rem;
+  line-height: 1.3em;
 }
 
-ol, ul {
-    font-size: 1.6rem;
-    line-height: 1.3em;
+ol,
+ul {
+  font-size: 1.6rem;
+  line-height: 1.3em;
 }
 
 li {
-    margin: 0 0 0.4em;
+  margin: 0 0 0.4em;
 }
 
 b {
-    color: rgba(255, 213, 52, 0.988);
+  color: rgba(255, 213, 52, 0.988);
 }
 
-#container-top{
-    display:flex;
-    align-items:center;
-    justify-content:center;
+#container-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 header {
-    display: flex;
-    margin: 8px 5% 0;
-    width: 100%;
-    max-width: 1600px;
+  display: flex;
+  margin: 8px 5% 0;
+  width: 100%;
+  max-width: 1600px;
 }
 
 .navbar {
-    display: flex;
-    width: 100%;
+  display: flex;
+  width: 100%;
 }
 
 .leftnav {
-    font-family: 'Brush Script MT', cursive;
-    font-size: 2.8rem;
-    color: rgba(255, 213, 52, 0.988);
-    font-weight: 500;
-    text-shadow: -2px 2px 4px rgb(0, 0, 0);
-    margin-top: 10px;
+  font-family: "Brush Script MT", cursive;
+  font-size: 2.8rem;
+  color: rgba(255, 213, 52, 0.988);
+  font-weight: 500;
+  text-shadow: -2px 2px 4px rgb(0, 0, 0);
+  margin-top: 10px;
 }
 
 .rigtnav {
-    margin-left: auto;
+  margin-left: auto;
 }
 
 #container-mid {
-    display: flex;
-    flex-direction: row;
-    max-width: 1200px;
-    margin: 2% auto auto;
-    gap: 4em;
-    padding: 2em;
+  display: flex;
+  flex-direction: row;
+  max-width: 1200px;
+  margin: 2% auto auto;
+  gap: 4em;
+  padding: 2em;
 }
 
-@media screen and (max-width: 810px){
-    #container-mid{
-        flex-direction: column-reverse!important;
-    }
+@media screen and (max-width: 810px) {
+  #container-mid {
+    flex-direction: column-reverse !important;
+  }
 }
 
 .leftPart {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
 }
 
 .rightPart {
-    display: flex;
-    flex: 1 0 50%;
-    justify-content: center;
-    align-items: center;
-    
+  display: flex;
+  flex: 1 0 50%;
+  justify-content: center;
+  align-items: center;
 }
 
 .calculator {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid rgb(0, 0, 0);
-    box-shadow: 1px 0px 0px 6px rgb(0, 0, 0);
-    border-radius: 0.15em;
-    height: fit-content;
-    min-width: 350px;
-    flex: 0 350px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(0, 0, 0);
+  box-shadow: 1px 0px 0px 6px rgb(0, 0, 0);
+  border-radius: 0.15em;
+  height: fit-content;
+  min-width: 350px;
+  flex: 0 350px;
 }
 
 .display {
-    background-color:rgb(39, 39, 39);
-    color:rgb(255, 255, 255);
-    padding: 1.4em 0.4em;
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
+  background-color: rgb(39, 39, 39);
+  color: rgb(255, 255, 255);
+  padding: 1.4em 0.4em;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 }
 
-.top{
-    font-size:1.4rem;
-    letter-spacing: 0.2em;
-    color: rgb(164, 163, 163);
-    height: 1.5em;
+.top {
+  font-size: 1.4rem;
+  letter-spacing: 0.2em;
+  color: rgb(164, 163, 163);
+  height: 1.5em;
 }
 
-.bottom{
-    font-size:3.8rem;
+.bottom {
+  font-size: 3.8rem;
 }
 
 .calcButtons {
-    display: flex;
-    gap: 0.3em;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: center;
+  display: flex;
+  gap: 0.3em;
+  flex-wrap: wrap;
+  width: 100%;
+  justify-content: center;
 }
-
 
 .calcButtons button {
-    display: flex;
-    width: 24.1%;
-    color: rgb(255, 255, 255);
-    justify-content: center;
-    height: 3.5em;
-    align-items: center;
-    border-radius: 0.4em;
-    border: 0.2px solid rgb(128, 128, 128);
+  display: flex;
+  width: 24.1%;
+  color: rgb(255, 255, 255);
+  justify-content: center;
+  height: 3.5em;
+  align-items: center;
+  border-radius: 0.4em;
+  border: 0.2px solid rgb(128, 128, 128);
 }
-    
 
 .calculator .body {
-    background-color: rgb(39, 39, 39);
-    display: flex;
-    padding: 0.2em;
+  background-color: rgb(39, 39, 39);
+  display: flex;
+  padding: 0.2em;
 }
 
-.calcButtons .operation
-{
-    background-color:rgb(39, 39, 39);
+.calcButtons .operation {
+  background-color: rgb(39, 39, 39);
 }
 
-.calcButtons .operation:hover
-{
-    background-color: rgb(55 54 54);
+.calcButtons .operation:hover {
+  background-color: rgb(55 54 54);
 }
 
-.calcButtons .operation:focus
-{
-    background-color:rgb(39, 39, 39);
+.calcButtons .operation:focus {
+  background-color: rgb(39, 39, 39);
 }
 
-.calcButtons .number{
-    background-color: rgb(55 54 54);
+.calcButtons .number {
+  background-color: rgb(55 54 54);
 }
 
-.calcButtons .number:hover{
-    background-color:rgb(39, 39, 39);
+.calcButtons .number:hover {
+  background-color: rgb(39, 39, 39);
 }
 
 .calcButtons .number:focus {
-    background: rgb(31, 31, 31);
+  background: rgb(31, 31, 31);
 }
 
-div#container-bottom{
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: auto;
+div#container-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: auto;
 }
 
 div#footer {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    font-size: 1.4rem;
-    font-weight: bold;
-    padding: 0.3em;
-    background: rgb(0, 0, 0);
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: bold;
+  padding: 0.3em;
+  background: rgb(0, 0, 0);
 }
