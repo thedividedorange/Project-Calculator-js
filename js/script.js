@@ -215,7 +215,8 @@
 
     const handleResetButton = () => clearValues(true, true, true, true);
 
-    const clearValues = (objNew = false, objOld = false, display = false, currentState = false) => {
+    const clearValues = (objNew = false, objOld = false, display = false, currentState = false) => 
+    {
       objNew === true
         ? clearObj(calcState.newState, currentState)
         : calcState.newState;
@@ -334,8 +335,7 @@
     const updateDisplay = (topDisplayValue, bottomDisplayValue, operator) => {
       if (topDisplayValue) topDisplay.textContent = topDisplayValue;
 
-      if (isNumber(bottomDisplayValue))
-        bottomDisplayValue = bottomDisplayValue.toString();
+      if (isNumber(bottomDisplayValue)) bottomDisplayValue = bottomDisplayValue.toString();
 
       if (bottomDisplayValue) {
         if (operator) {
