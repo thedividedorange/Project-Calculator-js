@@ -8,7 +8,7 @@
       "%": (a, b) => {
         const { newState } = calcState;
         b = newState.next = checkFloatLength((a * b) / 100);
-        return this["+"](a, b)
+        return this["+"](a, b);
       },
       "x²": (num) => Math.pow(num, 2),
       "1/x": (num) => 1 / num,
