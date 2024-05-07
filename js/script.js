@@ -5,7 +5,7 @@
       "-": (a, b) => a - b,
       "÷": (a, b) => a / b,
       "*": (a, b) => a * b,
-      "%": (a, b) => {
+      "%": function (a, b) {
         const { newState } = calcState;
         b = newState.next = checkFloatLength((a * b) / 100);
         return this["+"](a, b);
