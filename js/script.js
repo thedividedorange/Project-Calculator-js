@@ -107,11 +107,7 @@
           bottomDisplay = newState[currentState].toString();
           newState.operator = swap;
         } else {
-          bottomDisplay = operate(
-            newState.previous,
-            newState[currentState],
-            newState.operator
-          );
+          bottomDisplay = operate(newState.previous, newState[currentState], newState.operator);
           newState.operator = swap;
           topDisplay = `${newState.previous} ${newState.operator} ${newState[currentState]} =`;
           bottomDisplay = operate(newState.previous, newState[currentState], newState.operator);
