@@ -268,7 +268,10 @@
       if (currentState) {
         if (newState[currentState]) {
           let temp = newState[currentState].toString();
-          temp = temp.charAt(temp.length - 1) === "." ? temp.concat("0") : temp;
+          temp = 
+            temp.charAt(temp.length - 1) === "." 
+              ? temp.concat("0") 
+              : temp;
           result = newState[currentState] = parseFloat(temp);
         }
       } else return;
