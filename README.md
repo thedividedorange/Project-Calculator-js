@@ -1,6 +1,6 @@
 # JavaScript Calculator
 
-This is a simple calculator built using HTML, CSS, and JavaScript. It Functions similar to Windows 10 Calculator.
+This is a simple calculator built using HTML, CSS, and JavaScript. It Functions similar to Windows 10 Calculator. 
 
 This project is developed as part of [The Odin Project](https://www.theodinproject.com/) curriculum.
 
